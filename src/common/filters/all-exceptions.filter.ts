@@ -1,6 +1,11 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
+interface ExceptionResponse {
+  message?: string | string[];
+  error?: string;
+}
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger('AllExceptionsFilter');
@@ -12,14 +17,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+    const exceptionResponse =
+      exception instanceof HttpException ? (exception.getResponse() as ExceptionResponse) : { message: 'Internal server error' };
+
+    const message = Array.isArray(exceptionResponse.message)
+      ? exceptionResponse.message.join(', ')
+      : exceptionResponse.message || 'Internal server error';
+
+    const error = exceptionResponse.error || 'Error';
 
     this.logger.error(`HTTP ${status} - ${request.method} ${request.url}`, exception instanceof Error ? exception.stack : String(exception));
 
     reply.status(status).send({
       statusCode: status,
-      message: typeof message === 'string' ? message : (message as any).message,
-      error: (message as any).error || 'Error',
+      message,
+      error,
       timestamp: new Date().toISOString(),
       path: request.url,
     });

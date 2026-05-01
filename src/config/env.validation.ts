@@ -26,44 +26,6 @@ class EnvironmentVariables {
   LOG_LEVEL!: string;
 }
 
-class DatabaseVariables {
-  @IsString()
-  @IsNotEmpty()
-  DATABASE_URL!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  DATABASE_HOST!: string;
-
-  @IsNumber()
-  DATABASE_PORT!: number;
-
-  @IsString()
-  @IsNotEmpty()
-  DATABASE_NAME!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  DATABASE_USERNAME!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  DATABASE_PASSWORD!: string;
-}
-
-class RedisVariables {
-  @IsString()
-  @IsNotEmpty()
-  REDIS_URL!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  REDIS_HOST!: string;
-
-  @IsNumber()
-  REDIS_PORT!: number;
-}
-
 export function validateEnv(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, { enableImplicitConversion: true });
   const errors = validateSync(validatedConfig, { skipMissingProperties: false });
