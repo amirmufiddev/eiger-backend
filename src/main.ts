@@ -4,6 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
@@ -20,9 +21,21 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { WebSocketAdapter } from './common/adapters/websocket.adapter';
 
 async function bootstrap() {
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+    {
+      logger: false,
+    },
+  );
+
+  const configService = app.get(ConfigService);
+  const logLevel = configService.get<string>('LOG_LEVEL', 'info') || 'info';
+  const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:3000') || 'http://localhost:3000';
+
   const winstonLogger = WinstonModule.createLogger({
     instance: winston.createLogger({
-      level: process.env.LOG_LEVEL || 'info',
+      level: logLevel,
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.errors({ stack: true }),
@@ -65,17 +78,11 @@ async function bootstrap() {
     }),
   });
 
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-    {
-      logger: winstonLogger,
-    },
-  );
+  app.useLogger(winstonLogger);
 
   await app.register(helmet, { contentSecurityPolicy: false });
   await app.register(cors, {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: corsOrigin,
     credentials: true,
   });
   await app.register(csrf as any);
@@ -90,7 +97,6 @@ async function bootstrap() {
     }),
   );
 
-  app.useLogger(winstonLogger);
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
@@ -105,7 +111,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 4000;
+  const port = configService.get<number>('PORT', 4000) || 4000;
   await app.listen(port);
   console.log(`Application running on: http://localhost:${port}`);
   console.log(`Swagger docs: http://localhost:${port}/api`);
