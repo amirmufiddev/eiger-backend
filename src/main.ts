@@ -11,6 +11,7 @@ import csrf from '@fastify/csrf';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
 import * as winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
@@ -23,7 +24,6 @@ async function bootstrap() {
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.errors({ stack: true }),
-      winston.format.json(),
     ),
     transports: [
       new winston.transports.Console({
@@ -38,12 +38,26 @@ async function bootstrap() {
           }),
         ),
       }),
-      new winston.transports.File({
-        filename: 'logs/error.log',
+      new (DailyRotateFile)({
         level: 'error',
+        filename: 'logs/error-%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+        zippedArchive: true,
+        maxFiles: '14d',
       }),
-      new winston.transports.File({
-        filename: 'logs/combined.log',
+      new (DailyRotateFile)({
+        level: 'warn',
+        filename: 'logs/warn-%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+        zippedArchive: true,
+        maxFiles: '14d',
+      }),
+      new (DailyRotateFile)({
+        level: 'debug',
+        filename: 'logs/debug-%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+        zippedArchive: true,
+        maxFiles: '14d',
       }),
     ],
   });
