@@ -3,10 +3,10 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  Logger,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Logger } from 'winston';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -20,7 +20,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         const response = context.switchToHttp().getResponse();
-        this.logger.log(
+        this.logger.info(
           `${method} ${url} ${response.statusCode} - ${Date.now() - now}ms`,
         );
       }),

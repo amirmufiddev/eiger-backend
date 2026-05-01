@@ -4,9 +4,9 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { Logger } from 'winston';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

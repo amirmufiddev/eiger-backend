@@ -3,14 +3,13 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import csrf from '@fastify/csrf';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
-import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { AppModule } from './app.module';
@@ -19,33 +18,41 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { WebSocketAdapter } from './common/adapters/websocket.adapter';
 
 async function bootstrap() {
+  const winstonInstance = winston.createLogger({
+    level: process.env.LOG_LEVEL || 'info',
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.errors({ stack: true }),
+      winston.format.json(),
+    ),
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          nestWinstonModuleUtilities.format.nestLike('EigerAPI', {
+            colors: true,
+            prettyPrint: true,
+            processId: true,
+            appName: true,
+          }),
+        ),
+      }),
+      new winston.transports.File({
+        filename: 'logs/error.log',
+        level: 'error',
+      }),
+      new winston.transports.File({
+        filename: 'logs/combined.log',
+      }),
+    ],
+  });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
     {
-      logger: WinstonModule.createLogger({
-        transports: [
-          new winston.transports.Console({
-            format: winston.format.combine(
-              winston.format.timestamp(),
-              winston.format.ms(),
-              nestWinstonModuleUtilities.format.nestLike('EigerAPI', {
-                colors: true,
-                prettyPrint: true,
-                processId: true,
-                appName: true,
-              }),
-            ),
-          }),
-          new winston.transports.File({
-            filename: 'logs/error.log',
-            level: 'error',
-          }),
-          new winston.transports.File({
-            filename: 'logs/combined.log',
-          }),
-        ],
-      }),
+      logger: winstonInstance,
     },
   );
 
@@ -66,10 +73,9 @@ async function bootstrap() {
     }),
   );
 
-  const logger = app.get(Logger);
-  app.useLogger(logger);
-  app.useGlobalFilters(new AllExceptionsFilter(logger));
-  app.useGlobalInterceptors(new LoggingInterceptor(logger));
+  app.useLogger(winstonInstance as any);
+  app.useGlobalFilters(new AllExceptionsFilter(winstonInstance));
+  app.useGlobalInterceptors(new LoggingInterceptor(winstonInstance));
   app.useWebSocketAdapter(new WebSocketAdapter(app));
 
   const config = new DocumentBuilder()
