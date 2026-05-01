@@ -3,7 +3,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
@@ -31,7 +31,6 @@ async function bootstrap() {
   const port = configService.get<number>('PORT')!;
 
   const appLogger = app.get(AppLoggerService);
-  const winstonLogger = appLogger.getLogger();
   app.useLogger(appLogger);
 
   await app.register(helmet, { contentSecurityPolicy: false });
@@ -39,6 +38,7 @@ async function bootstrap() {
     origin: corsOrigin,
     credentials: true,
   });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(csrf as any);
   await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
   await app.register(compress, { encodings: ['gzip', 'deflate'] });
@@ -70,4 +70,4 @@ async function bootstrap() {
   console.log(`Swagger docs: http://localhost:${port}/api`);
 }
 
-bootstrap();
+void bootstrap();
