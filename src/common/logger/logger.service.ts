@@ -14,7 +14,10 @@ export class AppLoggerService implements LoggerService {
 
     this.logger = winston.createLogger({
       level: logLevel,
-      format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true })),
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+      ),
       transports: [
         new winston.transports.Console({
           format: winston.format.combine(
@@ -81,7 +84,10 @@ export class AppLoggerService implements LoggerService {
     return WinstonModule.createLogger({
       instance: winston.createLogger({
         level: process.env.LOG_LEVEL || 'info',
-        format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true })),
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.errors({ stack: true }),
+        ),
         transports: [
           new winston.transports.Console({
             format: winston.format.combine(

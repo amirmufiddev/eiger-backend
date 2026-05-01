@@ -13,7 +13,9 @@ export class RedisService implements OnModuleDestroy {
     const port = this.configService.get<number>('redis.port')!;
     const password = this.configService.get<string>('redis.password');
 
-    const url = password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`;
+    const url = password
+      ? `redis://:${password}@${host}:${port}`
+      : `redis://${host}:${port}`;
 
     this.client = new Redis(url);
   }
@@ -29,7 +31,10 @@ export class RedisService implements OnModuleDestroy {
 
 @Global()
 @Module({
-  providers: [RedisService, { provide: REDIS_CLIENT, useExisting: RedisService }],
+  providers: [
+    RedisService,
+    { provide: REDIS_CLIENT, useExisting: RedisService },
+  ],
   exports: [RedisService, REDIS_CLIENT],
 })
 export class RedisModule {}
