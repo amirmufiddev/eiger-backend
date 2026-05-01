@@ -1,5 +1,5 @@
-import { IoAdapter } from "@nestjs/platform-socket.io";
-import { INestApplication } from "@nestjs/common";
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { INestApplication } from '@nestjs/common';
 
 export class WebSocketAdapter extends IoAdapter {
   constructor(app: INestApplication) {
@@ -10,10 +10,10 @@ export class WebSocketAdapter extends IoAdapter {
     return super.createIOServer(port, {
       ...options,
       cors: {
-        origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
         credentials: true,
       },
-      transports: ["websocket"],
+      transports: ['websocket'],
     });
   }
 }
