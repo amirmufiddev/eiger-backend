@@ -3,15 +3,16 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import csrf from '@fastify/csrf';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
+import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
@@ -19,54 +20,56 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { WebSocketAdapter } from './common/adapters/websocket.adapter';
 
 async function bootstrap() {
-  const winstonInstance = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.errors({ stack: true }),
-    ),
-    transports: [
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.ms(),
-          nestWinstonModuleUtilities.format.nestLike('EigerAPI', {
-            colors: true,
-            prettyPrint: true,
-            processId: true,
-            appName: true,
-          }),
-        ),
-      }),
-      new (DailyRotateFile)({
-        level: 'error',
-        filename: 'logs/error-%DATE%.log',
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxFiles: '14d',
-      }),
-      new (DailyRotateFile)({
-        level: 'warn',
-        filename: 'logs/warn-%DATE%.log',
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxFiles: '14d',
-      }),
-      new (DailyRotateFile)({
-        level: 'debug',
-        filename: 'logs/debug-%DATE%.log',
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxFiles: '14d',
-      }),
-    ],
+  const winstonLogger = WinstonModule.createLogger({
+    instance: winston.createLogger({
+      level: process.env.LOG_LEVEL || 'info',
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+      ),
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            nestWinstonModuleUtilities.format.nestLike('EigerAPI', {
+              colors: true,
+              prettyPrint: true,
+              processId: true,
+              appName: true,
+            }),
+          ),
+        }),
+        new winston.transports.DailyRotateFile({
+          level: 'error',
+          filename: 'logs/error-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxFiles: '14d',
+        }),
+        new winston.transports.DailyRotateFile({
+          level: 'warn',
+          filename: 'logs/warn-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxFiles: '14d',
+        }),
+        new winston.transports.DailyRotateFile({
+          level: 'debug',
+          filename: 'logs/debug-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxFiles: '14d',
+        }),
+      ],
+    }),
   });
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
     {
-      logger: winstonInstance,
+      logger: winstonLogger,
     },
   );
 
@@ -87,9 +90,9 @@ async function bootstrap() {
     }),
   );
 
-  app.useLogger(winstonInstance as any);
-  app.useGlobalFilters(new AllExceptionsFilter(winstonInstance));
-  app.useGlobalInterceptors(new LoggingInterceptor(winstonInstance));
+  app.useLogger(winstonLogger);
+  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
 
   const config = new DocumentBuilder()
