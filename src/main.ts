@@ -30,8 +30,9 @@ async function bootstrap() {
   );
 
   const configService = app.get(ConfigService);
-  const logLevel = configService.get<string>('LOG_LEVEL', 'info') || 'info';
-  const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:3000') || 'http://localhost:3000';
+  const logLevel = configService.get<string>('LOG_LEVEL')!;
+  const corsOrigin = configService.get<string>('CORS_ORIGIN')!;
+  const port = configService.get<number>('PORT')!;
 
   const winstonLogger = WinstonModule.createLogger({
     instance: winston.createLogger({
@@ -111,7 +112,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = configService.get<number>('PORT', 4000) || 4000;
   await app.listen(port);
   console.log(`Application running on: http://localhost:${port}`);
   console.log(`Swagger docs: http://localhost:${port}/api`);

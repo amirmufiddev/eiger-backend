@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
 
 enum Environment {
   Development = 'development',
@@ -9,22 +9,59 @@ enum Environment {
 
 class EnvironmentVariables {
   @IsEnum(Environment)
-  @IsOptional()
-  NODE_ENV?: Environment = Environment.Development;
+  @IsNotEmpty()
+  NODE_ENV!: Environment;
 
   @IsNumber()
   @Min(1024)
   @Max(65535)
-  @IsOptional()
-  PORT?: number = 4000;
+  PORT!: number;
 
   @IsString()
-  @IsOptional()
-  CORS_ORIGIN?: string = 'http://localhost:3000';
+  @IsNotEmpty()
+  CORS_ORIGIN!: string;
 
   @IsString()
-  @IsOptional()
-  LOG_LEVEL?: string = 'info';
+  @IsNotEmpty()
+  LOG_LEVEL!: string;
+}
+
+class DatabaseVariables {
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_URL!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_HOST!: string;
+
+  @IsNumber()
+  DATABASE_PORT!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_NAME!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_USERNAME!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  DATABASE_PASSWORD!: string;
+}
+
+class RedisVariables {
+  @IsString()
+  @IsNotEmpty()
+  REDIS_URL!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST!: string;
+
+  @IsNumber()
+  REDIS_PORT!: number;
 }
 
 export function validateEnv(config: Record<string, unknown>) {
