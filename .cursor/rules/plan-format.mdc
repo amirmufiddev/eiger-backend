@@ -1,0 +1,77 @@
+---
+alwaysApply: false
+---
+
+# Format plan modul Ecura
+
+Saat **membuat atau merevisi** file `*.plan.md` di `.cursor/plans/`, ikuti struktur ini. Bahasa dokumen: **Bahasa Indonesia**.
+
+## Cara pakai di Cursor
+
+- Buka atau buat file target di `**/.cursor/plans/<YYYYMMDDHHiiss>_<slug>.plan.md`, **atau**
+- Di chat, **@** pilih rule **plan-format** lalu minta: “Buat plan modul … berdasarkan issue …”.
+
+## Frontmatter wajib (baris pertama file)
+
+```yaml
+---
+name: ""
+overview: ""
+todos: []
+isProject: false
+---
+```
+
+Isi `name` / `overview` / `todos` sesuai kebutuhan Cursor Plans; inti konten tetap di bawah frontmatter.
+
+## Judul
+
+```markdown
+# Plan: Modul <YYYYMMDDHHiiss> - <Nama Plan Singkat>
+```
+
+## Bagian Workflow (setelah judul)
+
+Urutan wajib:
+
+1. `## Workflow` — fase **Phase 1–5** (Brainstorming → Workspace Setup → Planning → Implementation → Completion), referensi skill Superpowers yang relevan (`/brainstorming`, `/using-git-worktrees`, `/writing-plans`, `/subagent-driven-development` atau `/executing-plans`, `/test-driven-development`, `/requesting-code-review`, `/finishing-a-development-branch`).
+2. `### Tech Stack` — bullet versi pnpm/package yang dipakai modul ini.
+3. `### Prerequisites Checklist` — checklist `[ ]` (modul dependency, API, env, deps).
+
+Pemisah horizontal `---` setelah blok Workflow.
+
+## Isi utama (urutan section)
+
+Gunakan heading dan konten berikut (nomor konsisten dengan referensi modul A):
+
+| Section                      | Isi minimum                                                                                                                                                                                     |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `## 1. Overview`             | Paragraf scope + bullet **Tanggung Jawab**                                                                                                                                                      |
+| `## Prerequisites`           | Sub: Issue yang harus sudah ada, Konfigurasi, Data, Backend Dependencies                                                                                                                        |
+| `## 2. Requirements`         | Tabel Tech Stack, `pnpm install` jika ada paket baru, blok `env` contoh                                                                                                                         |
+| `## 3. API Endpoints`        | Tabel Method/Endpoint/Deskripsi (+ Offline Support jika relevan), contoh JSON request/response per endpoint penting                                                                             |
+| `## 4. Database Schema`      | Buat `mermaid` erDiagram yang menggambarkan struktur database utama. Setelah diagram, buat tabel Markdown dengan dua kolom: Tabel dan Deskripsi, untuk menjelaskan setiap entitas di dalam ERD. |
+| `## 5. Frontend Pages`       | Tabel Page / Route / Deskripsi / Access, **Page Flow** (ASCII tree)                                                                                                                             |
+| `## 6. Core Features`        | Sub `### 6.x` per fitur (bullet perilaku)                                                                                                                                                       |
+| `## 7. User Flow`            | Minimal satu diagram **mermaid** (`flowchart`) per alur utama                                                                                                                                   |
+| `## 8. Components`           | Tabel nama komponen, path `src/...`, deskripsi; kelompokkan (Auth, Domain, Layout, UI)                                                                                                          |
+| `## 9. State Management`     | Pola store + cuplikan tipe/interface penting + **File Structure** tree `src/`                                                                                                                   |
+| `## 10. Edge Cases`          | Tabel skenario vs handling; sub **Error Messages** jika UX error penting                                                                                                                        |
+| `## 11. Acceptance Criteria` | Per area fitur, item `- [ ]` yang bisa diverifikasi manual/QA                                                                                                                                   |
+
+Pemisah `---` antar blok besar bila memperjelas (sama seperti referensi).
+
+## Bagian penutup
+
+- `## GitHub Issue` — link issue + label.
+- `## Catatan Asumsi` — daftar bernomor (stack, security, kontrak API, token TTL, dll.).
+- `## Files to Create/Modify` — sub **New Files** dan **Modify Existing Files** dengan path repo yang pasti.
+
+## Workflow implementasi
+
+- `## Workflow Implementation`: worktree (`git worktree add …`), langkah implementasi bernomor, perintah verifikasi (`pnpm test`, `lint`, `build`), contoh commit message & `gh pr create`, **Branch naming**, **PR Labels**, **Dependencies antar Modul**.
+
+## Gaya penulisan
+
+- Tabel rapi (kolom sejajar), path file **konkret**, tanpa placeholder kosong seperti “TBD” tanpa konteks — jika belum pasti, tulis di **Catatan Asumsi**.
+- Tidak mengubah flow bisnis atau schema DB di dokumen plan kecuali memang sudah meminta konfirmasi dan juga harus update dokumentasi yang ada.

@@ -4,13 +4,13 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-} from "@nestjs/common";
-import { FastifyRequest, FastifyReply } from "fastify";
-import { WinstonLogger } from "../logger/winston.logger";
+  Logger,
+} from '@nestjs/common';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly logger: WinstonLogger) {}
+  constructor(private readonly logger: Logger) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -25,18 +25,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException
         ? exception.getResponse()
-        : "Internal server error";
+        : 'Internal server error';
 
     this.logger.error(
       `HTTP ${status} - ${request.method} ${request.url}`,
       exception instanceof Error ? exception.stack : String(exception),
-      "AllExceptionsFilter",
     );
 
     reply.status(status).send({
       statusCode: status,
-      message: typeof message === "string" ? message : (message as any).message,
-      error: (message as any).error || "Error",
+      message: typeof message === 'string' ? message : (message as any).message,
+      error: (message as any).error || 'Error',
       timestamp: new Date().toISOString(),
       path: request.url,
     });
