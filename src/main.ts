@@ -11,14 +11,11 @@ import cors from '@fastify/cors';
 import csrf from '@fastify/csrf';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
-import 'winston-daily-rotate-file';
-import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { WebSocketAdapter } from './common/adapters/websocket.adapter';
+import { AppLoggerService } from './common/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -30,56 +27,12 @@ async function bootstrap() {
   );
 
   const configService = app.get(ConfigService);
-  const logLevel = configService.get<string>('LOG_LEVEL')!;
   const corsOrigin = configService.get<string>('CORS_ORIGIN')!;
   const port = configService.get<number>('PORT')!;
 
-  const winstonLogger = WinstonModule.createLogger({
-    instance: winston.createLogger({
-      level: logLevel,
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.errors({ stack: true }),
-      ),
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.ms(),
-            nestWinstonModuleUtilities.format.nestLike('EigerAPI', {
-              colors: true,
-              prettyPrint: true,
-              processId: true,
-              appName: true,
-            }),
-          ),
-        }),
-        new winston.transports.DailyRotateFile({
-          level: 'error',
-          filename: 'logs/error-%DATE%.log',
-          datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxFiles: '14d',
-        }),
-        new winston.transports.DailyRotateFile({
-          level: 'warn',
-          filename: 'logs/warn-%DATE%.log',
-          datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxFiles: '14d',
-        }),
-        new winston.transports.DailyRotateFile({
-          level: 'debug',
-          filename: 'logs/debug-%DATE%.log',
-          datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxFiles: '14d',
-        }),
-      ],
-    }),
-  });
-
-  app.useLogger(winstonLogger);
+  const appLogger = app.get(AppLoggerService);
+  const winstonLogger = appLogger.getLogger();
+  app.useLogger(appLogger);
 
   await app.register(helmet, { contentSecurityPolicy: false });
   await app.register(cors, {

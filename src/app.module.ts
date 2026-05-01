@@ -4,6 +4,7 @@ import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
 import { validateEnv } from './config/env.validation';
 import { RedisModule } from './infrastructure/redis/redis.module';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RedisModule } from './infrastructure/redis/redis.module';
       load: [databaseConfig, redisConfig],
       expandVariables: true,
     }),
+    LoggerModule,
     RedisModule,
   ],
   controllers: [],
