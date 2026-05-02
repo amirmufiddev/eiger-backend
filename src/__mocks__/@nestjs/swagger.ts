@@ -1,0 +1,12 @@
+export const ApiTags = jest.fn(() => (target: any) => target);
+export const ApiOperation = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiResponse = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiBearerAuth = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiBody = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiParam = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiQuery = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiHeader = jest.fn(() => (target: any, key?: string, descriptor?: PropertyDescriptor) => descriptor);
+export const ApiExcludeEndpoint = jest.fn();
+export const ApiProperty = jest.fn();
+export const ApiPropertyOptional = jest.fn();
+export const ApiHideProperty = jest.fn();

@@ -13,12 +13,9 @@ import {
   ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto } from './dto';
-import { AuthGuard } from '../../common/guards/auth.guard';
+import { AuthService, AuthGuard, Session, AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -27,28 +24,35 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Register new member' })
-  @ApiBody({ type: RegisterDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Registration successful',
-  })
+  @ApiResponse({ status: 201, description: 'Registration successful' })
   @ApiResponse({ status: 409, description: 'User already exists' })
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto.email, dto.name);
+  async register(@Body() body: { email: string; name: string; password: string }) {
+    const result = await this.authService.api.signUpEmail({
+      body: {
+        email: body.email,
+        password: body.password,
+        name: body.name,
+      },
+    });
+    return result;
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @AllowAnonymous()
   @ApiOperation({ summary: 'Login' })
-  @ApiBody({ type: LoginDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Login successful',
-  })
+  @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.email);
+  async login(@Body() body: { email: string; password: string }) {
+    const result = await this.authService.api.signInEmail({
+      body: {
+        email: body.email,
+        password: body.password,
+      },
+    });
+    return result;
   }
 
   @Post('logout')
@@ -66,7 +70,10 @@ export class AuthController {
     if (type !== 'Bearer' || !token) {
       throw new UnauthorizedException('Invalid authorization header');
     }
-    return this.authService.logout(token);
+    const result = await this.authService.api.signOut({
+      headers: { authorization: authHeader },
+    });
+    return result;
   }
 
   @Get('profile')
@@ -75,14 +82,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProfile(@Headers('authorization') authHeader: string) {
-    if (!authHeader) {
-      throw new UnauthorizedException('No authorization token provided');
-    }
-    const [type, token] = authHeader.split(' ');
-    if (type !== 'Bearer' || !token) {
-      throw new UnauthorizedException('Invalid authorization header');
-    }
-    return this.authService.getProfile(token);
+  async getProfile(@Session() session: any) {
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+      role: session.user.role,
+      createdAt: session.user.createdAt,
+    };
   }
 }

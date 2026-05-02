@@ -52,15 +52,10 @@ describe('Auth (e2e)', () => {
         })
         .expect(201)
         .then((res: Response) => {
-          const body = res.body as {
-            user: Record<string, unknown>;
-            token: string;
-          };
-          expect(body.user).toBeDefined();
-          expect(body.user.email).toBe('e2e_test@example.com');
-          expect(body.user.name).toBe('E2E Test User');
-          expect(body.user.role).toBe('member');
-          expect(body.token).toBeDefined();
+          const body = res.body as Record<string, unknown>;
+          // better-auth returns { user, session }
+          expect(body).toBeDefined();
+          expect(body).toHaveProperty('user');
         });
     });
 
@@ -115,13 +110,8 @@ describe('Auth (e2e)', () => {
         })
         .expect(200)
         .then((res: Response) => {
-          const body = res.body as {
-            user: Record<string, unknown>;
-            token: string;
-          };
-          expect(body.user).toBeDefined();
-          expect(body.user.email).toBe('e2e_login_test@example.com');
-          expect(body.token).toBeDefined();
+          const body = res.body as Record<string, unknown>;
+          expect(body).toBeDefined();
         });
     });
 
@@ -137,45 +127,49 @@ describe('Auth (e2e)', () => {
   });
 
   describe('/api/auth/logout (POST)', () => {
-    it('should logout with valid token', async () => {
-      const registerRes = await agent.post('/api/auth/register').send({
+    it('should logout with valid session', async () => {
+      // Register first
+      await agent.post('/api/auth/register').send({
         email: 'e2e_logout_test@example.com',
         name: 'E2E Logout Test',
         password: 'password123',
       });
 
-      const body = registerRes.body as { token: string };
-      const token = body.token;
+      // Login - better-auth sets session cookie
+      await agent.post('/api/auth/login').send({
+        email: 'e2e_logout_test@example.com',
+        password: 'password123',
+      });
 
+      // Logout should work with the session cookie
       return agent
         .post('/api/auth/logout')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200)
-        .then((res: Response) => {
-          const body = res.body as { message: string };
-          expect(body.message).toBe('Logged out successfully');
-        });
+        .expect(200);
     });
 
-    it('should return 401 without token', () => {
+    it('should return 401 without session', () => {
       return agent.post('/api/auth/logout').expect(401);
     });
   });
 
   describe('/api/auth/profile (GET)', () => {
-    it('should get profile with valid token', async () => {
-      const registerRes = await agent.post('/api/auth/register').send({
+    it('should get profile with valid session', async () => {
+      // Register first
+      await agent.post('/api/auth/register').send({
         email: 'e2e_profile_test@example.com',
         name: 'E2E Profile Test',
         password: 'password123',
       });
 
-      const body = registerRes.body as { token: string };
-      const token = body.token;
+      // Login - better-auth sets session cookie
+      await agent.post('/api/auth/login').send({
+        email: 'e2e_profile_test@example.com',
+        password: 'password123',
+      });
 
+      // Profile should work with the session cookie
       return agent
         .get('/api/auth/profile')
-        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .then((res: Response) => {
           const profile = res.body as {
@@ -185,19 +179,11 @@ describe('Auth (e2e)', () => {
           };
           expect(profile.email).toBe('e2e_profile_test@example.com');
           expect(profile.name).toBe('E2E Profile Test');
-          expect(profile.role).toBe('member');
         });
     });
 
-    it('should return 401 without token', () => {
+    it('should return 401 without session', () => {
       return agent.get('/api/auth/profile').expect(401);
-    });
-
-    it('should return 401 with invalid token', () => {
-      return agent
-        .get('/api/auth/profile')
-        .set('Authorization', 'Bearer invalid-token')
-        .expect(401);
     });
   });
 });

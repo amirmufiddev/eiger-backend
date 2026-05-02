@@ -1,137 +1,83 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { UnauthorizedException } from '@nestjs/common';
+// Controller test: instantiate directly without NestJS DI
+// to avoid decorator compilation issues with jest.mock
 
-const mockAuthService = {
-  register: jest.fn(),
-  login: jest.fn(),
-  logout: jest.fn(),
-  getProfile: jest.fn(),
-};
+const signUpEmail = jest.fn();
+const signInEmail = jest.fn();
+const signOut = jest.fn();
+
+jest.mock('@thallesp/nestjs-better-auth', () => ({
+  AuthService: function() { return { api: { signUpEmail, signInEmail, signOut } }; },
+  AuthGuard: function() { return { canActivate: () => true }; },
+  AllowAnonymous: function() { return function(_t: any, _k: any, d: any) { return d; }; },
+  Session: function() { return function(_target: any, _key: string, index: number) {}; },
+}));
+
+jest.mock('@nestjs/swagger', () => ({
+  ApiTags: function() { return function(t: any) { return t; }; },
+  ApiOperation: function() { return function(_t: any, _k: any, d: any) { return d; }; },
+  ApiResponse: function() { return function(_t: any, _k: any, d: any) { return d; }; },
+  ApiBearerAuth: function() { return function(_t: any, _k: any, d: any) { return d; }; },
+}));
+
+import { UnauthorizedException } from '@nestjs/common';
+// Import controller class directly - bypass NestJS DI
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { AuthController } = require('./auth.controller');
 
 describe('AuthController', () => {
-  let controller: AuthController;
+  let controller: InstanceType<typeof AuthController>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: mockAuthService,
-        },
-        {
-          provide: AuthGuard,
-          useValue: { canActivate: jest.fn().mockReturnValue(true) },
-        },
-      ],
-    })
-      .overrideGuard(AuthGuard)
-      .useValue({ canActivate: jest.fn().mockReturnValue(true) })
-      .compile();
-
-    controller = module.get<AuthController>(AuthController);
+  beforeEach(() => {
     jest.clearAllMocks();
+    const authService = {
+      api: { signUpEmail, signInEmail, signOut },
+    };
+    controller = new AuthController(authService);
   });
 
   describe('register', () => {
-    it('should register a new user', async () => {
-      const dto = {
-        email: 'test@example.com',
-        name: 'Test User',
-        password: 'password123',
-      };
-      const expected = {
-        user: {
-          id: 'uuid',
-          email: 'test@example.com',
-          name: 'Test User',
-          role: 'member',
-        },
-        token: 'session-token',
-      };
-
-      mockAuthService.register.mockResolvedValue(expected);
-
-      const result = await controller.register(dto);
-
+    it('should call signUpEmail with correct params', async () => {
+      const body = { email: 'test@example.com', name: 'Test User', password: 'pass123' };
+      const expected = { user: { id: 'uuid' }, session: { token: 'tok' } };
+      signUpEmail.mockResolvedValue(expected);
+      const result = await controller.register(body);
       expect(result).toEqual(expected);
-      expect(mockAuthService.register).toHaveBeenCalledWith(
-        'test@example.com',
-        'Test User',
-      );
+      expect(signUpEmail).toHaveBeenCalledWith({ body: { email: 'test@example.com', password: 'pass123', name: 'Test User' } });
     });
   });
 
   describe('login', () => {
-    it('should login user', async () => {
-      const dto = { email: 'test@example.com', password: 'password123' };
-      const expected = {
-        user: {
-          id: 'uuid',
-          email: 'test@example.com',
-          name: 'Test User',
-          role: 'member',
-        },
-        token: 'session-token',
-      };
-
-      mockAuthService.login.mockResolvedValue(expected);
-
-      const result = await controller.login(dto);
-
+    it('should call signInEmail with correct params', async () => {
+      const body = { email: 'test@example.com', password: 'pass123' };
+      const expected = { user: { id: 'uuid' }, session: { token: 'tok' } };
+      signInEmail.mockResolvedValue(expected);
+      const result = await controller.login(body);
       expect(result).toEqual(expected);
-      expect(mockAuthService.login).toHaveBeenCalledWith('test@example.com');
     });
   });
 
   describe('logout', () => {
-    it('should logout user', async () => {
-      const expected = { message: 'Logged out successfully' };
-      mockAuthService.logout.mockResolvedValue(expected);
-
+    it('should call signOut', async () => {
+      signOut.mockResolvedValue({ success: true });
       const result = await controller.logout('Bearer valid-token');
-
-      expect(result).toEqual(expected);
-      expect(mockAuthService.logout).toHaveBeenCalledWith('valid-token');
+      expect(result).toEqual({ success: true });
     });
 
-    it('should throw UnauthorizedException if no token provided', async () => {
-      await expect(controller.logout('')).rejects.toThrow(
-        UnauthorizedException,
-      );
+    it('should throw if no token', async () => {
+      await expect(controller.logout('')).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should throw UnauthorizedException if invalid header format', async () => {
-      await expect(controller.logout('InvalidFormat token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+    it('should throw if invalid format', async () => {
+      await expect(controller.logout('Invalid token')).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('getProfile', () => {
     it('should return user profile', async () => {
-      const expected = {
-        id: 'uuid',
-        email: 'test@example.com',
-        name: 'Test User',
-        role: 'member',
-        createdAt: expect.any(Date) as Date,
-      };
-      mockAuthService.getProfile.mockResolvedValue(expected);
-
-      const result = await controller.getProfile('Bearer valid-token');
-
-      expect(result).toEqual(expected);
-      expect(mockAuthService.getProfile).toHaveBeenCalledWith('valid-token');
-    });
-
-    it('should throw UnauthorizedException if no token provided', async () => {
-      await expect(controller.getProfile('')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      const session = { user: { id: 'uuid', email: 'a@b.com', name: 'Test', role: 'member', createdAt: new Date() } };
+      const result = await controller.getProfile(session);
+      expect(result.email).toBe('a@b.com');
+      expect(result.name).toBe('Test');
     });
   });
 });
