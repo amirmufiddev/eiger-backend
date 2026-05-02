@@ -8,7 +8,12 @@ import {
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import { DATABASE_CONNECTION } from '../../infrastructure/database/database.module';
-import { users, wallets, memberships, sessions } from '../../infrastructure/database/schema/index';
+import {
+  users,
+  wallets,
+  memberships,
+  sessions,
+} from '../../infrastructure/database/schema/index';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type * as schema from '../../infrastructure/database/schema/index';
 

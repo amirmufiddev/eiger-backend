@@ -10,6 +10,8 @@ import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
 
 import csrf from '@fastify/csrf';
 import { AppModule } from './app.module';
@@ -59,6 +61,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Eiger Adventure Land API')
@@ -67,12 +70,26 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  // Serve Swagger UI static files
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(fastifyStatic as any, {
+    root: path.join(__dirname, '..', 'node_modules', 'swagger-ui-static'),
+    prefix: '/swagger-ui/',
+    decorateReply: false,
+  });
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+    customCss: `
+      @import url('/swagger-ui/swagger-ui.css');
+      .swagger-ui .topbar { display: none }
+    `,
+  });
 
   await app.listen(port);
   console.log(`Application running on: http://localhost:${port}`);
-  console.log(`Swagger docs: http://localhost:${port}/api`);
+  console.log(`Swagger docs: http://localhost:${port}/docs`);
 }
 
 void bootstrap();
