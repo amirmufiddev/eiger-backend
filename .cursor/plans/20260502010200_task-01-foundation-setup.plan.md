@@ -1,8 +1,6 @@
 ---
 name: task-01-foundation-setup
 overview: "Task 1: Setup Fastify + Security Middleware + nest-winston Logging + Redis Infrastructure"
-status: built
-todos: []
 isProject: false
 ---
 
@@ -22,7 +20,7 @@ isProject: false
 
 - [x] NestJS project sudah dibuat (`nest new eiger-backend`)
 - [x] Git remote sudah configured
-- [ ] PostgreSQL dan Redis jalan
+- [x] PostgreSQL dan Redis jalan
 
 ---
 
@@ -439,4 +437,4 @@ git push -u origin task/01-foundation-setup
 - [x] Redis connection configured
 - [x] Build successful
 - [x] GitHub issue created
-- [ ] PR created
+- [x] PR created

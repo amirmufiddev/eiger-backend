@@ -17,7 +17,10 @@ Saat **membuat atau merevisi** file `*.plan.md` di `.cursor/plans/`, ikuti struk
 ---
 name: ""
 overview: ""
-todos: []
+todos:
+- id: ""
+    content: ""
+    status: ""
 isProject: false
 ---
 ```
