@@ -37,7 +37,16 @@ async function bootstrap() {
   app.useLogger(appLogger);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(helmet as any, { contentSecurityPolicy: false });
+  await app.register(helmet as any, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [`'self'`],
+        styleSrc: [`'self'`, `'unsafe-inline'`],
+        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+        scriptSrc: [`'self'`, `https:`, `'unsafe-inline'`],
+      },
+    },
+  });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(cors as any, {
     origin: corsOrigin,
@@ -47,8 +56,6 @@ async function bootstrap() {
   await app.register(csrf as any);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
@@ -63,14 +70,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
 
-  const config = new DocumentBuilder()
-    .setTitle('Eiger Adventure Land API')
-    .setDescription('Cashless & Single-Identity Pass System')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-
-  // Serve Swagger UI static files from swagger-ui-dist
+  // Serve Swagger UI static files - must be before compress
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(fastifyStatic as any, {
     root: path.join(__dirname, '..', 'node_modules', 'swagger-ui-dist'),
@@ -78,14 +78,21 @@ async function bootstrap() {
     decorateReply: false,
   });
 
+  const config = new DocumentBuilder()
+    .setTitle('Eiger Adventure Land API')
+    .setDescription('Cashless & Single-Identity Pass System')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
     jsonDocumentUrl: 'swagger/json',
-    customCss: `
-      @import url('/swagger-ui/swagger-ui.css');
-      .swagger-ui .topbar { display: none }
-    `,
   });
+
+  // Register compress last - it will compress API responses but not static assets
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
   await app.listen(port);
   console.log(`Application running on: http://localhost:${port}`);
