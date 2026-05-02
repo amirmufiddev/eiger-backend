@@ -3,29 +3,29 @@ name: task-03-common-guards-decorators
 overview: "Task 3: Common Guards, Decorators, dan Filters"
 todos:
   - id: 1
-    content: "Buat GitHub Issue untuk Task 03"
-    status: pending
+    content: Buat GitHub Issue untuk Task 03
+    status: completed
   - id: 2
-    content: "Buat Roles decorator (src/common/decorators/roles.decorator.ts)"
-    status: pending
+    content: Buat Roles decorator (src/common/decorators/roles.decorator.ts)
+    status: completed
   - id: 3
-    content: "Buat CurrentUser decorator (src/common/decorators/current-user.decorator.ts)"
-    status: pending
+    content: Buat CurrentUser decorator (src/common/decorators/current-user.decorator.ts)
+    status: completed
   - id: 4
-    content: "Buat AuthGuard (src/common/guards/auth.guard.ts)"
-    status: pending
+    content: Buat AuthGuard (src/common/guards/auth.guard.ts)
+    status: completed
   - id: 5
-    content: "Buat RolesGuard (src/common/guards/roles.guard.ts)"
-    status: pending
+    content: Buat RolesGuard (src/common/guards/roles.guard.ts)
+    status: completed
   - id: 6
-    content: "Buat index.ts exports"
-    status: pending
+    content: Buat index.ts exports
+    status: completed
   - id: 7
-    content: "Verify build successful"
-    status: pending
+    content: Verify build successful
+    status: completed
   - id: 8
-    content: "Buat PR ke branch task/03-common-guards-decorators"
-    status: pending
+    content: Buat PR ke branch task/03-common-guards-decorators
+    status: completed
 isProject: false
 ---
 
