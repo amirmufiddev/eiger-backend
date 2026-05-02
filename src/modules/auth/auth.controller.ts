@@ -15,7 +15,13 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AuthService, AuthGuard, Session, AllowAnonymous } from '@thallesp/nestjs-better-auth';
+import {
+  AuthService,
+  AuthGuard,
+  Session,
+  AllowAnonymous,
+  type UserSession,
+} from '@thallesp/nestjs-better-auth';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -28,7 +34,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Register new member' })
   @ApiResponse({ status: 201, description: 'Registration successful' })
   @ApiResponse({ status: 409, description: 'User already exists' })
-  async register(@Body() body: { email: string; name: string; password: string }) {
+  async register(
+    @Body() body: { email: string; name: string; password: string },
+  ) {
     const result = await this.authService.api.signUpEmail({
       body: {
         email: body.email,
@@ -82,7 +90,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProfile(@Session() session: any) {
+  getProfile(@Session() session: UserSession) {
     return {
       id: session.user.id,
       email: session.user.email,

@@ -1,6 +1,8 @@
 jest.mock('@thallesp/nestjs-better-auth', () => ({
-  DatabaseHook: function() { return function(t: any) { return t; }; },
-  AfterCreate: function() { return function(_t: any, _k: any, d: any) { return d; }; },
+  DatabaseHook: jest.fn(() => (target: unknown) => target),
+  AfterCreate: jest.fn(
+    () => (_t: unknown, _k: string, d: PropertyDescriptor) => d,
+  ),
 }));
 
 jest.mock('../../infrastructure/database/schema/index', () => ({

@@ -1,7 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { AfterCreate, DatabaseHook } from '@thallesp/nestjs-better-auth';
 import { DATABASE_CONNECTION } from '../../infrastructure/database/database.module';
-import { wallets, memberships } from '../../infrastructure/database/schema/index';
+import {
+  wallets,
+  memberships,
+} from '../../infrastructure/database/schema/index';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type * as schema from '../../infrastructure/database/schema/index';
 

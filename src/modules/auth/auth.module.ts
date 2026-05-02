@@ -1,11 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AuthModule as NestjsAuthModule } from '@thallesp/nestjs-better-auth';
-import { auth } from '../../lib/auth';
+import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
 import { AuthHooks } from './auth.service';
+import { ConfigService } from '@nestjs/config';
+import { createAuth } from './auth.factory';
 
 @Module({
   imports: [
-    NestjsAuthModule.forRoot({ auth, disableControllers: true }),
+    BetterAuthModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        auth: createAuth({ configService }),
+        bodyParser: {
+          json: { limit: '2mb' },
+          urlencoded: { limit: '2mb', extended: true },
+          rawBody: true,
+        },
+      }),
+    }),
   ],
   providers: [AuthHooks],
 })

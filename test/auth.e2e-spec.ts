@@ -142,9 +142,7 @@ describe('Auth (e2e)', () => {
       });
 
       // Logout should work with the session cookie
-      return agent
-        .post('/api/auth/logout')
-        .expect(200);
+      return agent.post('/api/auth/logout').expect(200);
     });
 
     it('should return 401 without session', () => {
