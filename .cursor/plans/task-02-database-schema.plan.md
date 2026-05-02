@@ -3,29 +3,29 @@ name: task-02-database-schema
 overview: "Task 2: Database Infrastructure - Drizzle Schema & Database Module"
 todos:
   - id: 1
-    content: "Buat GitHub Issue untuk Task 02"
-    status: pending
+    content: Buat GitHub Issue untuk Task 02
+    status: completed
   - id: 2
-    content: "Buat directory src/infrastructure/database/"
-    status: pending
+    content: Buat directory src/infrastructure/database/
+    status: completed
   - id: 3
-    content: "Buat DatabaseModule (database.module.ts)"
-    status: pending
+    content: Buat DatabaseModule (database.module.ts)
+    status: completed
   - id: 4
-    content: "Buat Schema dengan semua entities dan relations (schema.ts)"
-    status: pending
+    content: Buat Schema dengan semua entities dan relations (schema.ts)
+    status: completed
   - id: 5
-    content: "Buat Seed script (seed.ts)"
-    status: pending
+    content: Buat Seed script (seed.ts)
+    status: completed
   - id: 6
-    content: "Update AppModule untuk import DatabaseModule"
-    status: pending
+    content: Update AppModule untuk import DatabaseModule
+    status: completed
   - id: 7
-    content: "Verify build successful"
-    status: pending
+    content: Verify build successful
+    status: completed
   - id: 8
-    content: "Buat PR ke branch task/02-database-schema"
-    status: pending
+    content: Buat PR ke branch task/02-database-schema
+    status: completed
 isProject: true
 ---
 

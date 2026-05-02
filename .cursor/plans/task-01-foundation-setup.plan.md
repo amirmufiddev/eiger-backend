@@ -3,38 +3,38 @@ name: task-01-foundation-setup
 overview: "Task 1: Setup Fastify + Security Middleware + nest-winston Logging + Redis Infrastructure"
 todos:
   - id: 1
-    content: "Buat GitHub Issue untuk Task 01"
-    status: pending
+    content: Buat GitHub Issue untuk Task 01
+    status: completed
   - id: 2
-    content: "Install dependencies (platform-fastify, fastify packages, nest-winston, winston, ioredis)"
-    status: pending
+    content: Install dependencies (platform-fastify, fastify packages, nest-winston, winston, ioredis)
+    status: completed
   - id: 3
-    content: "Buat WinstonLogger (src/common/logger/winston.logger.ts)"
-    status: pending
+    content: Buat WinstonLogger (src/common/logger/winston.logger.ts)
+    status: completed
   - id: 4
-    content: "Buat AllExceptionsFilter (src/common/filters/all-exceptions.filter.ts)"
-    status: pending
+    content: Buat AllExceptionsFilter (src/common/filters/all-exceptions.filter.ts)
+    status: completed
   - id: 5
-    content: "Buat LoggingInterceptor (src/common/interceptors/logging.interceptor.ts)"
-    status: pending
+    content: Buat LoggingInterceptor (src/common/interceptors/logging.interceptor.ts)
+    status: completed
   - id: 6
-    content: "Buat RedisModule (src/infrastructure/redis/redis.module.ts)"
-    status: pending
+    content: Buat RedisModule (src/infrastructure/redis/redis.module.ts)
+    status: completed
   - id: 7
-    content: "Update main.ts dengan Fastify + security middleware"
-    status: pending
+    content: Update main.ts dengan Fastify + security middleware
+    status: completed
   - id: 8
-    content: "Update AppModule untuk import modules"
-    status: pending
+    content: Update AppModule untuk import modules
+    status: completed
   - id: 9
-    content: "Create logs directory"
-    status: pending
+    content: Create logs directory
+    status: completed
   - id: 10
-    content: "Verify build successful"
-    status: pending
+    content: Verify build successful
+    status: completed
   - id: 11
-    content: "Buat PR ke branch task/01-foundation-setup"
-    status: pending
+    content: Buat PR ke branch task/01-foundation-setup
+    status: completed
 isProject: false
 ---
 
