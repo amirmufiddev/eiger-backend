@@ -10,8 +10,6 @@ import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
-import fastifyStatic from '@fastify/static';
-import path from 'path';
 
 import csrf from '@fastify/csrf';
 import { AppModule } from './app.module';
@@ -47,15 +45,6 @@ async function bootstrap() {
       },
     },
   });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(cors as any, {
-    origin: corsOrigin,
-    credentials: true,
-  });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(csrf as any);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
@@ -70,14 +59,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
 
-  // Serve Swagger UI static files - must be before compress
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(fastifyStatic as any, {
-    root: path.join(__dirname, '..', 'node_modules', 'swagger-ui-dist'),
-    prefix: '/swagger-ui/',
-    decorateReply: false,
-  });
-
   const config = new DocumentBuilder()
     .setTitle('Eiger Adventure Land API')
     .setDescription('Cashless & Single-Identity Pass System')
@@ -90,7 +71,15 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  // Register compress last - it will compress API responses but not static assets
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(cors as any, {
+    origin: corsOrigin,
+    credentials: true,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(csrf as any);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
