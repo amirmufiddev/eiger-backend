@@ -26,6 +26,15 @@ todos:
   - id: 8
     content: Buat PR ke branch task/02-database-schema
     status: completed
+  - id: 9
+    content: Split schema.ts ke folder schema/ (enums, users, sessions, memberships, wallets, products, payment-methods, transactions, transaction-items)
+    status: completed
+  - id: 10
+    content: Buat index.ts untuk export semua schema
+    status: completed
+  - id: 11
+    content: Tambahkan migration commands ke package.json (db:generate, db:migrate, db:push, db:seed, db:reset, db:seed:reset)
+    status: completed
 isProject: true
 ---
 
@@ -431,7 +440,74 @@ DatabaseModule,
 
 ---
 
-## 4. GitHub Issue & PR
+## 4. Drizzle Migration Commands
+
+Tambahkan script berikut di `package.json`:
+
+```json
+{
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx src/infrastructure/database/seed.ts",
+    "db:reset": "drizzle-kit drop && drizzle-kit migrate",
+    "db:seed:reset": "drizzle-kit drop && drizzle-kit migrate && tsx src/infrastructure/database/seed.ts"
+  }
+}
+```
+
+### Cara Penggunaan
+
+| Command | Fungsi |
+|---------|--------|
+| `pnpm db:generate` | Generate migration files dari schema |
+| `pnpm db:migrate` | Run semua migration yang belum di-apply |
+| `pnpm db:push` | Push schema langsung ke DB (tanpa migration file) |
+| `pnpm db:seed` | Jalankan seed script |
+| `pnpm db:reset` | Drop semua table, lalu migrate ulang |
+| `pnpm db:seed:reset` | Reset DB + migrate + seed |
+
+---
+
+## 5. Schema Splitting
+
+Split `schema.ts` menjadi modular files di `src/infrastructure/database/schema/`.
+
+### Target Structure
+
+```
+src/infrastructure/database/schema/
+├── index.ts                    # Export semua schema & relations
+├── enums.schema.ts             # roleEnum, transactionStatusEnum
+├── users.schema.ts             # users table & usersRelations
+├── sessions.schema.ts          # sessions table & sessionsRelations
+├── memberships.schema.ts       # memberships table & membershipsRelations
+├── wallets.schema.ts           # wallets table & walletsRelations
+├── products.schema.ts          # products table
+├── payment-methods.schema.ts   # paymentMethods table
+├── transactions.schema.ts      # transactions table & transactionsRelations
+└── transaction-items.schema.ts # transactionItems table & transactionItemsRelations
+```
+
+### index.ts Export Pattern
+
+```typescript
+// src/infrastructure/database/schema/index.ts
+export * from './enums.schema';
+export * from './users.schema';
+export * from './sessions.schema';
+export * from './memberships.schema';
+export * from './wallets.schema';
+export * from './products.schema';
+export * from './payment-methods.schema';
+export * from './transactions.schema';
+export * from './transaction-items.schema';
+```
+
+---
+
+## 6. GitHub Issue & PR
 
 ### Create Issue
 
@@ -449,12 +525,14 @@ git push -u origin task/02-database-schema
 
 ---
 
-## 5. Verification Checklist
+## 7. Verification Checklist
 
 - [ ] DatabaseModule configured
-- [ ] Schema with all entities created
+- [ ] Schema dengan semua entities di-split ke folder terpisah
+- [ ] index.ts export semua schema
 - [ ] Relations defined
 - [ ] Seed script created
+- [ ] Drizzle commands (db:generate, db:migrate, db:push, db:seed, db:reset, db:seed:reset) ditambahkan ke package.json
 - [ ] Build successful
 - [ ] GitHub issue created
 - [ ] PR created

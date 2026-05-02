@@ -8,9 +8,9 @@ import {
 import { eq } from 'drizzle-orm';
 import { Request } from 'express';
 import { DATABASE_CONNECTION } from '../../infrastructure/database/database.module';
-import { sessions, users } from '../../infrastructure/database/schema';
+import { sessions, users } from '../../infrastructure/database/schema/index';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../infrastructure/database/schema';
+import type * as schema from '../../infrastructure/database/schema/index';
 
 interface RequestWithUser extends Request {
   user?: {
