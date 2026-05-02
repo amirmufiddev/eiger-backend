@@ -1,7 +1,34 @@
 ---
 name: task-04-auth-module
 overview: "Task 4: Auth Module - Register, Login, Session Management"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 04"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/auth/"
+    status: pending
+  - id: 3
+    content: "Buat AuthService (register, login, logout, getProfile)"
+    status: pending
+  - id: 4
+    content: "Buat DTOs (register.dto.ts, login.dto.ts)"
+    status: pending
+  - id: 5
+    content: "Buat AuthController dengan endpoints"
+    status: pending
+  - id: 6
+    content: "Buat AuthModule"
+    status: pending
+  - id: 7
+    content: "Update AppModule import AuthModule"
+    status: pending
+  - id: 8
+    content: "Verify build successful"
+    status: pending
+  - id: 9
+    content: "Buat PR ke branch task/04-auth-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +40,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Auth module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 04] Auth Module - Register, Login, Session Management"
+body: (isi overview)
+labels: ["backend", "task-04", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

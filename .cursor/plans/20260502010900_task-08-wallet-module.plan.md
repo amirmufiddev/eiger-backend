@@ -1,7 +1,40 @@
 ---
 name: task-08-wallet-module
 overview: "Task 8: Wallet Module - Repository, Service, Admin/Member Controllers"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 08"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/wallet/"
+    status: pending
+  - id: 3
+    content: "Buat WalletRepository"
+    status: pending
+  - id: 4
+    content: "Buat WalletService"
+    status: pending
+  - id: 5
+    content: "Buat DTOs (TopupDto, WalletResponse)"
+    status: pending
+  - id: 6
+    content: "Buat WalletAdminController"
+    status: pending
+  - id: 7
+    content: "Buat WalletMemberController"
+    status: pending
+  - id: 8
+    content: "Buat WalletModule"
+    status: pending
+  - id: 9
+    content: "Update AppModule import WalletModule"
+    status: pending
+  - id: 10
+    content: "Verify build successful"
+    status: pending
+  - id: 11
+    content: "Buat PR ke branch task/08-wallet-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +46,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Wallet module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 08] Wallet Module - Repository, Service, Controllers"
+body: (isi overview)
+labels: ["backend", "task-08", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

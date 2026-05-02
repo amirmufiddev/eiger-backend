@@ -1,6 +1,40 @@
 ---
 name: task-01-foundation-setup
 overview: "Task 1: Setup Fastify + Security Middleware + nest-winston Logging + Redis Infrastructure"
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 01"
+    status: pending
+  - id: 2
+    content: "Install dependencies (platform-fastify, fastify packages, nest-winston, winston, ioredis)"
+    status: pending
+  - id: 3
+    content: "Buat WinstonLogger (src/common/logger/winston.logger.ts)"
+    status: pending
+  - id: 4
+    content: "Buat AllExceptionsFilter (src/common/filters/all-exceptions.filter.ts)"
+    status: pending
+  - id: 5
+    content: "Buat LoggingInterceptor (src/common/interceptors/logging.interceptor.ts)"
+    status: pending
+  - id: 6
+    content: "Buat RedisModule (src/infrastructure/redis/redis.module.ts)"
+    status: pending
+  - id: 7
+    content: "Update main.ts dengan Fastify + security middleware"
+    status: pending
+  - id: 8
+    content: "Update AppModule untuk import modules"
+    status: pending
+  - id: 9
+    content: "Create logs directory"
+    status: pending
+  - id: 10
+    content: "Verify build successful"
+    status: pending
+  - id: 11
+    content: "Buat PR ke branch task/01-foundation-setup"
+    status: pending
 isProject: false
 ---
 
@@ -12,9 +46,24 @@ isProject: false
 
 | Fase | Aktivitas                        | Skill                             |
 | ---- | -------------------------------- | --------------------------------- |
-| 1    | Buat GitHub Issue untuk task ini | `/github-mcp-server`              |
+| 1    | Buat GitHub Issue untuk task ini | `issue_write` MCP tool            |
 | 2    | Implementasi foundation          | `/executing-plans`                |
 | 3    | Buat PR setelah selesai          | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 01] Foundation Setup - Fastify + Security Middleware"
+body: (isi overview dan tech stack)
+labels: ["backend", "task-01", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ### Prerequisites Checklist
 

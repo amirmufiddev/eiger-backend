@@ -1,7 +1,40 @@
 ---
 name: task-09-transaction-module
 overview: "Task 9: Transaction Module - Checkout, Payment, Transaction History"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 09"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/transaction/"
+    status: pending
+  - id: 3
+    content: "Buat TransactionRepository"
+    status: pending
+  - id: 4
+    content: "Buat TransactionService"
+    status: pending
+  - id: 5
+    content: "Buat DTOs (CheckoutDto, TransactionResponse)"
+    status: pending
+  - id: 6
+    content: "Buat TransactionAdminController"
+    status: pending
+  - id: 7
+    content: "Buat TransactionMemberController"
+    status: pending
+  - id: 8
+    content: "Buat TransactionModule"
+    status: pending
+  - id: 9
+    content: "Update AppModule import TransactionModule"
+    status: pending
+  - id: 10
+    content: "Verify build successful"
+    status: pending
+  - id: 11
+    content: "Buat PR ke branch task/09-transaction-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +46,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Transaction module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 09] Transaction Module - Checkout, Payment, History"
+body: (isi overview)
+labels: ["backend", "task-09", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

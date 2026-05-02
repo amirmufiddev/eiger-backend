@@ -1,7 +1,28 @@
 ---
 name: task-14-final-assembly
 overview: "Task 14: Final Assembly - Integration Test, Package.json, README"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 14"
+    status: pending
+  - id: 2
+    content: "Update package.json scripts (build, start, test, db:*)"
+    status: pending
+  - id: 3
+    content: "Create .env.example"
+    status: pending
+  - id: 4
+    content: "Update README.md"
+    status: pending
+  - id: 5
+    content: "Verify build successful"
+    status: pending
+  - id: 6
+    content: "Run tests verify all passing"
+    status: pending
+  - id: 7
+    content: "Buat PR ke branch task/14-final-assembly"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +34,24 @@ isProject: false
 
 | Fase | Aktivitas                        | Skill                             |
 | ---- | -------------------------------- | --------------------------------- |
-| 1    | Buat GitHub Issue untuk task ini | `/github-mcp-server`              |
+| 1    | Buat GitHub Issue untuk task ini | `issue_write` MCP tool            |
 | 2    | Final Assembly                   | `/executing-plans`                |
 | 3    | Buat PR setelah selesai          | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 14] Final Assembly - Integration Test, Package.json, README"
+body: (isi overview)
+labels: ["backend", "task-14", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

@@ -1,7 +1,31 @@
 ---
 name: task-15-cicd-vps
 overview: "Task 15: CI/CD Pipeline - Deploy ke VPS dengan GitHub Actions"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 15"
+    status: pending
+  - id: 2
+    content: "Create GitHub Actions CI pipeline (.github/workflows/ci.yml)"
+    status: pending
+  - id: 3
+    content: "Create GitHub Actions CD pipeline (.github/workflows/deploy.yml)"
+    status: pending
+  - id: 4
+    content: "Create .env.production template"
+    status: pending
+  - id: 5
+    content: "Create deploy.sh script"
+    status: pending
+  - id: 6
+    content: "Create docker-compose.prod.yml"
+    status: pending
+  - id: 7
+    content: "Verify build successful"
+    status: pending
+  - id: 8
+    content: "Buat PR ke branch task/15-cicd-vps"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +37,24 @@ isProject: false
 
 | Fase | Aktivitas                        | Skill                             |
 | ---- | -------------------------------- | --------------------------------- |
-| 1    | Buat GitHub Issue untuk task ini | `/github-mcp-server`              |
+| 1    | Buat GitHub Issue untuk task ini | `issue_write` MCP tool            |
 | 2    | Setup CI/CD pipeline             | `/executing-plans`                |
 | 3    | Buat PR setelah selesai          | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 15] CI/CD Pipeline - Deploy ke VPS dengan GitHub Actions"
+body: (isi overview)
+labels: ["backend", "task-15", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 
