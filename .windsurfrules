@@ -1,0 +1,34 @@
+# Backend Project: Eiger Dev Test
+Sistem API untuk Cashless & Single-Identity Pass EAL.
+
+# AI Memory Bank Rules
+- JANGAN scan seluruh codebase di awal sesi jika tidak minta. Panggil file secara spesifik.
+- Selalu baca `/.ai/current-task.md` pertama kali untuk mengetahui konteks.
+- Rujuk ke `/.ai/architecture.md` untuk aturan arsitektur.
+
+# Tech Stack & Constraints
+- **Framework**: Node.js 20+, NestJS dengan Fastify adapter (`@nestjs/platform-fastify`).
+- **Database**: Drizzle ORM + PostgreSQL 15+.
+- **Realtime/Cache**: Redis + Socket.io adapter (`ioredis`, `@socket.io/redis-adapter`).
+- **Security & Logging**: `@fastify/helmet`, CORS, CSRF, Rate Limit. nest-winston untuk logging.
+- **Prinsip Arsitektur**: 
+  - Patuhi prinsip SOLID. 
+  - Gunakan *policy* terpisah: Guard (`@Roles()`, `RolesGuard`) memutus *authorize* tanpa mencampur di handler bisnis.
+  - Endpoint admin terpisah atau dijaga ketat oleh guard pada rute mutasi.
+
+# Knowledge Graph
+- Jika Anda membutuhkan pemahaman tentang arsitektur secara keseluruhan, ketergantungan antar modul, atau mencari *God Nodes*, wajib membaca file `graphify-out/GRAPH_REPORT.md`.
+- Jangan mencoba melakukan *full scan* folder, selalu rujuk ke laporan graf tersebut terlebih dahulu.
+
+# Graph Querying
+- Anda memiliki akses ke MCP tools Graphify. Jika pengguna menanyakan alur data atau relasi antar komponen (misalnya "bagaimana alur checkout memanggil fungsi X?"), gunakan tool `shortest_path` atau `get_neighbors` via MCP sebelum menulis kode.
+
+# Auto-Context Routing (Wajib Patuhi)
+Setiap kali menerima perintah dari saya, analisis niat perintah tersebut dan OTOMATIS baca file berikut sebelum menulis kode:
+- Jika terkait **Endpoint / API / Controller**: OTOMATIS baca `/.ai/api-contracts.md` dan `/.ai/edge-cases.md`.
+- Jika terkait **Database / Skema / Drizzle ORM**: OTOMATIS baca `/.ai/database-schema.md`.
+- Jika terkait **WebSocket / Realtime / Gate IoT**: OTOMATIS baca `/.ai/websocket-events.md`.
+- Jika terkait **Arsitektur Utama / Transaksi Checkout**: OTOMATIS baca `/.ai/architecture.md`.
+- Jika terkait **Application Flow / User Flow**: OTOMATIS baca `/.ai/application-flow.md`.
+
+Setelah tugas selesai, OTOMATIS perbarui `/.ai/current-task.md` tanpa perlu saya suruh.
