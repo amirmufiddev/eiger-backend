@@ -11,7 +11,7 @@ jest.mock('../../infrastructure/database/schema/index', () => ({
 }));
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthHooks } from './auth.service';
+import { AuthHooks } from './auth.hook';
 import { DATABASE_CONNECTION } from '../../infrastructure/database/database.module';
 
 describe('AuthHooks', () => {

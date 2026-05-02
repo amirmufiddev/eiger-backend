@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
-import { AuthHooks } from './auth.service';
+import { AuthHooks } from './auth.hook';
 import { ConfigService } from '@nestjs/config';
 import { createAuth } from './auth.factory';
 
