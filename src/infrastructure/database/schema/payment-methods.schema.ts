@@ -1,4 +1,10 @@
-import { pgTable, uuid, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  varchar,
+  integer,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 
 export const paymentMethods = pgTable('payment_methods', {
   id: uuid('id').defaultRandom().primaryKey(),

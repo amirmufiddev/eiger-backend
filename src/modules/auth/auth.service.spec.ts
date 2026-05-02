@@ -10,9 +10,21 @@ jest.mock('../../infrastructure/database/schema/index', () => ({
   sessions: 'sessions',
 }));
 
+interface MockDbChain {
+  from: jest.Mock;
+  where: jest.Mock;
+  limit: jest.Mock;
+}
+
+interface MockDb {
+  select: jest.Mock;
+  insert: jest.Mock;
+  delete: jest.Mock;
+}
+
 describe('AuthService', () => {
   let service: AuthService;
-  let mockDb: any;
+  let mockDb: MockDb;
 
   beforeEach(async () => {
     mockDb = {
@@ -34,19 +46,16 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
   });
 
-  const setupSelectMock = (resolvedValue: unknown[]) => {
-    const chain: any = {};
-    chain.from = jest.fn().mockReturnValue(chain);
-    chain.where = jest.fn().mockReturnValue(chain);
-    chain.limit = jest.fn().mockResolvedValue(resolvedValue);
-    mockDb.select.mockReturnValue(chain);
+  const createChain = (resolvedValue: unknown[]): MockDbChain => {
+    const chain: MockDbChain = {
+      from: jest.fn(),
+      where: jest.fn(),
+      limit: jest.fn(),
+    };
+    chain.from.mockReturnValue(chain);
+    chain.where.mockReturnValue(chain);
+    chain.limit.mockResolvedValue(resolvedValue);
     return chain;
-  };
-
-  const setupDeleteMock = () => {
-    mockDb.delete.mockReturnValue({
-      where: jest.fn().mockResolvedValue([]),
-    });
   };
 
   describe('register', () => {
@@ -60,7 +69,9 @@ describe('AuthService', () => {
         updatedAt: new Date(),
       };
 
-      setupSelectMock([]);
+      createChain([]);
+      mockDb.select.mockReturnValue(createChain([]));
+
       mockDb.insert.mockReturnValue({
         values: jest.fn().mockReturnValue({
           returning: jest.fn().mockResolvedValue([mockUser]),
@@ -76,7 +87,9 @@ describe('AuthService', () => {
     });
 
     it('should throw ConflictException if user exists', async () => {
-      setupSelectMock([{ email: 'test@example.com' }]);
+      mockDb.select.mockReturnValue(
+        createChain([{ email: 'test@example.com' }]),
+      );
 
       await expect(
         service.register('test@example.com', 'Test User'),
@@ -95,7 +108,7 @@ describe('AuthService', () => {
         updatedAt: new Date(),
       };
 
-      setupSelectMock([mockUser]);
+      mockDb.select.mockReturnValue(createChain([mockUser]));
       mockDb.insert.mockReturnValue({
         values: jest.fn().mockResolvedValue([]),
       });
@@ -107,7 +120,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if user not found', async () => {
-      setupSelectMock([]);
+      mockDb.select.mockReturnValue(createChain([]));
 
       await expect(service.login('nonexistent@example.com')).rejects.toThrow(
         UnauthorizedException,
@@ -117,7 +130,9 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should delete session', async () => {
-      setupDeleteMock();
+      mockDb.delete.mockReturnValue({
+        where: jest.fn().mockResolvedValue([]),
+      });
 
       const result = await service.logout('some-token');
 
@@ -144,19 +159,9 @@ describe('AuthService', () => {
         updatedAt: new Date(),
       };
 
-      // First call: session lookup
-      const chain1: any = {};
-      chain1.from = jest.fn().mockReturnValue(chain1);
-      chain1.where = jest.fn().mockReturnValue(chain1);
-      chain1.limit = jest.fn().mockResolvedValue([mockSession]);
-      mockDb.select.mockReturnValueOnce(chain1);
-
-      // Second call: user lookup
-      const chain2: any = {};
-      chain2.from = jest.fn().mockReturnValue(chain2);
-      chain2.where = jest.fn().mockReturnValue(chain2);
-      chain2.limit = jest.fn().mockResolvedValue([mockUser]);
-      mockDb.select.mockReturnValueOnce(chain2);
+      mockDb.select
+        .mockReturnValueOnce(createChain([mockSession]))
+        .mockReturnValueOnce(createChain([mockUser]));
 
       const result = await service.getProfile('valid-token');
 
@@ -165,11 +170,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException for invalid token', async () => {
-      const chain: any = {};
-      chain.from = jest.fn().mockReturnValue(chain);
-      chain.where = jest.fn().mockReturnValue(chain);
-      chain.limit = jest.fn().mockResolvedValue([]);
-      mockDb.select.mockReturnValue(chain);
+      mockDb.select.mockReturnValue(createChain([]));
 
       await expect(service.getProfile('invalid-token')).rejects.toThrow(
         UnauthorizedException,
@@ -186,11 +187,7 @@ describe('AuthService', () => {
         updatedAt: new Date(),
       };
 
-      const chain: any = {};
-      chain.from = jest.fn().mockReturnValue(chain);
-      chain.where = jest.fn().mockReturnValue(chain);
-      chain.limit = jest.fn().mockResolvedValue([mockSession]);
-      mockDb.select.mockReturnValue(chain);
+      mockDb.select.mockReturnValue(createChain([mockSession]));
       mockDb.delete.mockReturnValue({
         where: jest.fn().mockResolvedValue([]),
       });

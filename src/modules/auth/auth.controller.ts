@@ -19,10 +19,6 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
-import {
-  CurrentUser,
-  CurrentUserData,
-} from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
