@@ -1,6 +1,7 @@
 ---
 name: task-01-foundation-setup
 overview: "Task 1: Setup Fastify + Security Middleware + nest-winston Logging + Redis Infrastructure"
+status: built
 todos: []
 isProject: false
 ---
@@ -20,7 +21,7 @@ isProject: false
 ### Prerequisites Checklist
 
 - [x] NestJS project sudah dibuat (`nest new eiger-backend`)
-- [ ] Git remote sudah configured
+- [x] Git remote sudah configured
 - [ ] PostgreSQL dan Redis jalan
 
 ---
@@ -397,12 +398,12 @@ Body: ## Overview
 Setup fondasi backend dengan Fastify adapter, security middleware, Winston logger, dan Redis module.
 
 ## Acceptance Criteria
-- [ ] Fastify adapter configured
-- [ ] Security middleware active (helmet, cors, csrf, rate-limit, compression)
-- [ ] Winston logger replaces default logger
-- [ ] AllExceptionsFilter logs all errors
-- [ ] Redis module configured
-- [ ] Build successful
+- [x] Fastify adapter configured
+- [x] Security middleware active (helmet, cors, csrf, rate-limit, compression)
+- [x] Winston logger replaces default logger
+- [x] AllExceptionsFilter logs all errors
+- [x] Redis module configured
+- [x] Build successful
 ```
 
 ### After Implementation - Create PR
@@ -430,12 +431,12 @@ git push -u origin task/01-foundation-setup
 
 ## 7. Verification Checklist
 
-- [ ] Fastify adapter works
-- [ ] Security middleware active (helmet, cors, csrf, rate-limit, compression)
-- [ ] nest-winston replaces default logger
-- [ ] AllExceptionsFilter logs all errors
-- [ ] LoggingInterceptor logs requests
-- [ ] Redis connection configured
-- [ ] Build successful
-- [ ] GitHub issue created
+- [x] Fastify adapter works
+- [x] Security middleware active (helmet, cors, csrf, rate-limit, compression)
+- [x] nest-winston replaces default logger
+- [x] AllExceptionsFilter logs all errors
+- [x] LoggingInterceptor logs requests
+- [x] Redis connection configured
+- [x] Build successful
+- [x] GitHub issue created
 - [ ] PR created
