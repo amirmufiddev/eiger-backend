@@ -46,7 +46,9 @@ Setiap kali menerima perintah dari saya, analisis niat perintah tersebut dan OTO
 - Jika terkait **Arsitektur Utama / Transaksi Checkout**: OTOMATIS baca `/.ai/architecture.md`.
 - Jika terkait **Application Flow / User Flow**: OTOMATIS baca `/.ai/application-flow.md`.
 
-Setelah tugas selesai, OTOMATIS perbarui checklist pada file plan yang sedang aktif di `.cursor/plans/` dengan memberi tanda centang [x] tanpa perlu saya suruh.
+Sebelum eksekusi tugas, buat dan update dulu Todo pada file plan yang sedang aktif di `.cursor/plans/` dan juga sesuaikan `id` Todo nya.
+
+Setelah tugas di jalankan, di cancel, atau selesai, OTOMATIS perbarui checklist pada file plan yang sedang aktif di `.cursor/plans/` dengan memberi status `in_progress|cancelled|completed` tanpa perlu saya suruh.
 
 # Fallback Documentation
 - Jika informasi di folder `/.ai/` tidak cukup untuk menjawab pertanyaan bisnis atau Anda membutuhkan spesifikasi fungsional yang sangat mendetail, SILAKAN BACA file `PRD.md` di root folder.
