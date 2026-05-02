@@ -29,12 +29,16 @@ describe('Auth (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   afterEach(async () => {
-    await db.delete(sessions).where(like(sessions.userId, 'e2e_%'));
-    await db.delete(users).where(like(users.email, 'e2e_%'));
+    if (db) {
+      await db.delete(sessions).where(like(sessions.userId, 'e2e_%'));
+      await db.delete(users).where(like(users.email, 'e2e_%'));
+    }
   });
 
   describe('/api/auth/register (POST)', () => {
