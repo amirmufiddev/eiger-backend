@@ -1,8 +1,10 @@
 ---
+description: 
+globs: .cursor/plans/*.plan.md
 alwaysApply: false
 ---
 
-# Format plan modul Ecura
+# Format plan modul Project
 
 Saat **membuat atau merevisi** file `*.plan.md` di `.cursor/plans/`, ikuti struktur ini. Bahasa dokumen: **Bahasa Indonesia**.
 
@@ -48,7 +50,7 @@ Pemisah horizontal `---` setelah blok Workflow.
 Gunakan heading dan konten berikut (nomor konsisten dengan referensi modul A):
 
 | Section                      | Isi minimum                                                                                                                                                                                     |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ---- | ----- |
 | `## 1. Overview`             | Paragraf scope + bullet **Tanggung Jawab**                                                                                                                                                      |
 | `## Prerequisites`           | Sub: Issue yang harus sudah ada, Konfigurasi, Data, Backend Dependencies                                                                                                                        |
 | `## 2. Requirements`         | Tabel Tech Stack, `pnpm install` jika ada paket baru, blok `env` contoh                                                                                                                         |

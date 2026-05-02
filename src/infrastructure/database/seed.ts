@@ -40,10 +40,34 @@ async function seed() {
 
   // Create products
   await db.insert(schema.products).values([
-    { name: 'Base Entrance Pass', description: 'Tiket wajib masuk kawasan EAL', price: '50000', costPrice: '10000', operationalCost: '5000' },
-    { name: 'Suspension Bridge', description: 'Wahana suspension bridge', price: '75000', costPrice: '15000', operationalCost: '8000' },
-    { name: 'Cable Car', description: 'Wahana cable car', price: '100000', costPrice: '20000', operationalCost: '10000' },
-    { name: 'All-Access Pass', description: 'Tiket terusan + wahana premium', price: '200000', costPrice: '40000', operationalCost: '15000' },
+    {
+      name: 'Base Entrance Pass',
+      description: 'Tiket wajib masuk kawasan EAL',
+      price: '50000',
+      costPrice: '10000',
+      operationalCost: '5000',
+    },
+    {
+      name: 'Suspension Bridge',
+      description: 'Wahana suspension bridge',
+      price: '75000',
+      costPrice: '15000',
+      operationalCost: '8000',
+    },
+    {
+      name: 'Cable Car',
+      description: 'Wahana cable car',
+      price: '100000',
+      costPrice: '20000',
+      operationalCost: '10000',
+    },
+    {
+      name: 'All-Access Pass',
+      description: 'Tiket terusan + wahana premium',
+      price: '200000',
+      costPrice: '40000',
+      operationalCost: '15000',
+    },
   ]);
 
   // Create payment methods

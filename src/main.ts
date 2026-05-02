@@ -8,9 +8,10 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
-import csrf from '@fastify/csrf';
 import rateLimit from '@fastify/rate-limit';
 import compress from '@fastify/compress';
+
+import csrf from '@fastify/csrf';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -33,15 +34,19 @@ async function bootstrap() {
   const appLogger = app.get(AppLoggerService);
   app.useLogger(appLogger);
 
-  await app.register(helmet, { contentSecurityPolicy: false });
-  await app.register(cors, {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(helmet as any, { contentSecurityPolicy: false });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(cors as any, {
     origin: corsOrigin,
     credentials: true,
   });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(csrf as any);
-  await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
-  await app.register(compress, { encodings: ['gzip', 'deflate'] });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
   app.useGlobalPipes(
     new ValidationPipe({
