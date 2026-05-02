@@ -50,6 +50,7 @@ async function bootstrap() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -61,7 +62,6 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useWebSocketAdapter(new WebSocketAdapter(app));
-  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Eiger Adventure Land API')
@@ -70,10 +70,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
-  // Serve Swagger UI static files
+  // Serve Swagger UI static files from swagger-ui-dist
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   await app.register(fastifyStatic as any, {
-    root: path.join(__dirname, '..', 'node_modules', 'swagger-ui-static'),
+    root: path.join(__dirname, '..', 'node_modules', 'swagger-ui-dist'),
     prefix: '/swagger-ui/',
     decorateReply: false,
   });

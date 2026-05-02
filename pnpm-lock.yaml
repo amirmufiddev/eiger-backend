@@ -83,6 +83,9 @@ importers:
       socket.io:
         specifier: ^4.8.3
         version: 4.8.3
+      swagger-ui-dist:
+        specifier: ^5.32.4
+        version: 5.32.4
       swagger-ui-static:
         specifier: ^0.1.0
         version: 0.1.0
