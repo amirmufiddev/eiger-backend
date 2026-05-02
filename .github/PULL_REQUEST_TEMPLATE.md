@@ -39,6 +39,13 @@ Jelaskan lingkungan pengembangan yang digunakan untuk pengujian:
 - Versi Node: [misalnya, 12.18.3]
 - Alat/Bibliotek: [misalnya, Docker 19.03.12]
 
+## Files Changed
+
+| File | Perubahan |
+|------|-----------|
+| `*.ts` | Ex: Fastify setup, security middleware, bootstrapping |
+| `*.ts` | Ex: ConfigModule, LoggerModule, RedisModule imports |
+
 ## Screenshot (Opsional)
 
 Jika ada perubahan UI, lampirkan screenshot untuk mendemonstrasikan perubahan.
