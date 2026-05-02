@@ -4,10 +4,10 @@ import { Logger } from '@nestjs/common';
 import { createAuth, createAuthOptions } from '../../auth';
 
 export interface AuthFactoryDeps {
-  logger: Logger;
   databaseUrl: string;
   baseURL: string;
   secret: string;
+  logger: Logger;
 }
 
 export function createAuthFactory(deps: AuthFactoryDeps): Auth<any> {

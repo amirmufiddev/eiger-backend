@@ -42,3 +42,10 @@ export const createAuthOptions = (config: AuthConfig): BetterAuthOptions => {
 };
 
 export const createAuth = betterAuth;
+export const auth = createAuth(
+  createAuthOptions({
+    databaseUrl: process.env.DATABASE_URL!,
+    baseURL: process.env.BETTER_AUTH_URL!,
+    secret: process.env.BETTER_AUTH_SECRET!,
+  }),
+);

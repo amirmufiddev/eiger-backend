@@ -10,10 +10,10 @@ import { createAuthFactory } from './auth.factory';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         auth: createAuthFactory({
-          logger: new Logger('BetterAuth'),
           databaseUrl: configService.get<string>('DATABASE_URL')!,
           baseURL: configService.get<string>('BETTER_AUTH_URL')!,
           secret: configService.get<string>('BETTER_AUTH_SECRET')!,
+          logger: new Logger('BetterAuth'),
         }),
         bodyParser: {
           json: { limit: '2mb' },

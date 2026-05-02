@@ -10,7 +10,6 @@ export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
     {
       provide: DATABASE_CONNECTION,
       useFactory: (configService: ConfigService) => {
-        console.log('DATABASE_URL', configService.get<string>('DATABASE_URL'));
         return getDbConnection(configService.get<string>('DATABASE_URL'));
       },
       inject: [ConfigService],
