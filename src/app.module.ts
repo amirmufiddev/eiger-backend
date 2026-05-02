@@ -6,6 +6,7 @@ import { validateEnv } from './config/env.validation';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     LoggerModule,
     RedisModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

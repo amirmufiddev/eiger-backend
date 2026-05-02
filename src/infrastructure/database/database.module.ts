@@ -1,4 +1,6 @@
 import { Module, Global } from '@nestjs/common';
+import { getDbConnection } from '.';
+import { ConfigService } from '@nestjs/config';
 
 export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
 
@@ -7,18 +9,10 @@ export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
   providers: [
     {
       provide: DATABASE_CONNECTION,
-      useFactory: async () => {
-        const { drizzle } = await import('drizzle-orm/postgres-js');
-        const { default: postgres } = await import('postgres');
-
-        const connectionString = process.env.DATABASE_URL;
-        if (!connectionString) {
-          throw new Error('DATABASE_URL is not defined');
-        }
-
-        const client = postgres(connectionString);
-        return drizzle(client);
+      useFactory: (configService: ConfigService) => {
+        return getDbConnection(configService.get<string>('DATABASE_URL'));
       },
+      inject: [ConfigService],
     },
   ],
   exports: [DATABASE_CONNECTION],

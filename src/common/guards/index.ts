@@ -1,2 +1,7 @@
-export * from './auth.guard';
-export * from './roles.guard';
+export {
+  AuthGuard,
+  Roles,
+  OrgRoles,
+  AllowAnonymous,
+  OptionalAuth,
+} from '@thallesp/nestjs-better-auth';

@@ -23,7 +23,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
     {
-      logger: false,
+      bufferLogs: true,
+      bodyParser: false,
     },
   );
 
@@ -35,19 +36,18 @@ async function bootstrap() {
   app.useLogger(appLogger);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(helmet as any, { contentSecurityPolicy: false });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(cors as any, {
-    origin: corsOrigin,
-    credentials: true,
+  await app.register(helmet as any, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [`'self'`],
+        styleSrc: [`'self'`, `'unsafe-inline'`],
+        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+        scriptSrc: [`'self'`, `https:`, `'unsafe-inline'`],
+      },
+    },
   });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(csrf as any);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -68,11 +68,25 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(cors as any, {
+    origin: corsOrigin,
+    credentials: true,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(csrf as any);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(rateLimit as any, { max: 100, timeWindow: '1 minute' });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  await app.register(compress as any, { encodings: ['gzip', 'deflate'] });
 
   await app.listen(port);
   console.log(`Application running on: http://localhost:${port}`);
-  console.log(`Swagger docs: http://localhost:${port}/api`);
+  console.log(`Swagger docs: http://localhost:${port}/docs`);
 }
 
 void bootstrap();

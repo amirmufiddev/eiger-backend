@@ -1,4 +1,10 @@
-import { pgTable, uuid, integer, numeric, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  integer,
+  numeric,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { transactions } from './transactions.schema';
 import { products } from './products.schema';

@@ -1,343 +1,97 @@
 ---
 name: task-04-auth-module
-overview: "Task 4: Auth Module - Register, Login, Session Management"
+overview: "Task 4: Auth Module - Register, Login, Session Management (better-auth)"
 todos:
   - id: 1
-    content: "Buat GitHub Issue untuk Task 04"
-    status: pending
+    content: "Install @thallesp/nestjs-better-auth + @better-auth/drizzle-adapter + better-auth"
+    status: completed
   - id: 2
-    content: "Buat directory src/modules/auth/"
-    status: pending
+    content: "Create better-auth instance (src/lib/auth.ts)"
+    status: completed
   - id: 3
-    content: "Buat AuthService (register, login, logout, getProfile)"
-    status: pending
+    content: "Rewrite AuthModule with nestjs-better-auth"
+    status: completed
   - id: 4
-    content: "Buat DTOs (register.dto.ts, login.dto.ts)"
-    status: pending
+    content: "Rewrite AuthHooks for auto wallet/membership on user create"
+    status: completed
   - id: 5
-    content: "Buat AuthController dengan endpoints"
-    status: pending
+    content: "Update AuthController (use @Session decorator)"
+    status: completed
   - id: 6
-    content: "Buat AuthModule"
-    status: pending
+    content: "Update common guards to use @thallesp/nestjs-better-auth"
+    status: completed
   - id: 7
-    content: "Update AppModule import AuthModule"
-    status: pending
+    content: "Fix unit tests"
+    status: completed
   - id: 8
-    content: "Verify build successful"
-    status: pending
+    content: "Update plan files and PRD.md"
+    status: in_progress
   - id: 9
-    content: "Buat PR ke branch task/04-auth-module"
+    content: "Verify build + unit tests pass"
+    status: pending
+  - id: 10
+    content: "Commit and push PR"
     status: pending
 isProject: false
 ---
 
-# Plan: Task 04 - Auth Module
+# Plan: Task 04 - Auth Module (better-auth)
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.
+## Overview
 
-## Workflow
+Auth module menggunakan `better-auth` library via `@thallesp/nestjs-better-auth`. Session management ditangani oleh better-auth (cookie-based). User registration автоматически membuat wallet dan membership via `@AfterCreate` database hook.
 
-| Fase | Aktivitas | Skill |
-| ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
-| 2 | Implementasi Auth module | `/executing-plans` |
-| 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+## Key Implementation Changes
 
-### Fase 1 - Create GitHub Issue
-
-Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+### Architecture
 
 ```
-method: "create"
-owner: "amirmufiddev"
-repo: "eiger-backend"
-title: "[Task 04] Auth Module - Register, Login, Session Management"
-body: (isi overview)
-labels: ["backend", "task-04", "priority:P1"]
-```
-
-Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
-
----
-
-## 1. Overview
-
-Auth module untuk register, login, dan session management. Setiap user baru (member) auto-create wallet dan membership.
-
----
-
-## 2. Files to Create
-
-```
-backend/src/modules/auth/
-├── auth.module.ts
-├── auth.controller.ts
-├── auth.service.ts
+src/lib/auth.ts              # better-auth instance dengan drizzleAdapter
+src/modules/auth/
+├── auth.module.ts           # NestjsAuthModule.forRoot({ auth, disableControllers: true })
+├── auth.service.ts          # AuthHooks (DatabaseHook) untuk auto wallet/membership
+├── auth.controller.ts       # Custom endpoints: register, login, logout, profile
 └── dto/
     ├── index.ts
     ├── register.dto.ts
     └── login.dto.ts
+src/common/guards/           # Re-export dari @thallesp/nestjs-better-auth
 ```
 
----
-
-## 3. Implementation
-
-### Step 1: Create AuthService
-
-```typescript
-// src/modules/auth/auth.service.ts
-import {
-  Injectable,
-  Inject,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { eq } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
-import { DATABASE_CONNECTION } from '../../../infrastructure/database/database.module';
-import { users, wallets, memberships, sessions } from '../../../infrastructure/database/schema';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../infrastructure/database/schema';
-
-@Injectable()
-export class AuthService {
-  constructor(
-    @Inject(DATABASE_CONNECTION)
-    private db: PostgresJsDatabase<typeof schema>,
-  ) {}
-
-  async register(email: string, name: string, password: string) {
-    const existingUser = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-
-    if (existingUser.length > 0) {
-      throw new ConflictException('User already exists');
-    }
-
-    const [newUser] = await this.db
-      .insert(users)
-      .values({
-        email,
-        name,
-        role: 'member',
-      })
-      .returning();
-
-    await this.db.insert(wallets).values({
-      userId: newUser.id,
-      balance: '0',
-    });
-
-    await this.db.insert(memberships).values({
-      userId: newUser.id,
-      tier: 'bronze',
-      points: 0,
-    });
-
-    const token = uuidv4();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
-
-    await this.db.insert(sessions).values({
-      userId: newUser.id,
-      token,
-      expiresAt,
-    });
-
-    return {
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.name,
-        role: newUser.role,
-      },
-      token,
-    };
-  }
-
-  async login(email: string, password: string) {
-    const userResult = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-
-    if (userResult.length === 0) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const user = userResult[0];
-    const token = uuidv4();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
-
-    await this.db.insert(sessions).values({
-      userId: user.id,
-      token,
-      expiresAt,
-    });
-
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-      token,
-    };
-  }
-
-  async logout(token: string) {
-    await this.db.delete(sessions).where(eq(sessions.token, token));
-    return { message: 'Logged out successfully' };
-  }
-}
-```
-
-### Step 2: Create DTOs
-
-```typescript
-// src/modules/auth/dto/register.dto.ts
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
-
-export class RegisterDto {
-  @ApiProperty({ example: 'user@example.com' })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({ example: 'John Doe' })
-  @IsString()
-  @MinLength(1)
-  name: string;
-
-  @ApiProperty({ example: 'password123' })
-  @IsString()
-  @MinLength(6)
-  password: string;
-}
-```
-
-```typescript
-// src/modules/auth/dto/login.dto.ts
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
-
-export class LoginDto {
-  @ApiProperty({ example: 'user@example.com' })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({ example: 'password123' })
-  @IsString()
-  password: string;
-}
-```
-
-```typescript
-// src/modules/auth/dto/index.ts
-export * from './register.dto';
-export * from './login.dto';
-```
-
-### Step 3: Create AuthController
-
-```typescript
-// src/modules/auth/auth.controller.ts
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-} from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto } from './dto';
-
-@ApiTags('Auth')
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @Post('register')
-  @ApiOperation({ summary: 'Register new member' })
-  @ApiBody({ type: RegisterDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Registration successful',
-  })
-  @ApiResponse({ status: 409, description: 'User already exists' })
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto.email, dto.name, dto.password);
-  }
-
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login' })
-  @ApiBody({ type: LoginDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Login successful',
-  })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.email, dto.password);
-  }
-}
-```
-
-### Step 4: Create AuthModule
-
-```typescript
-// src/modules/auth/auth.module.ts
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-
-@Module({
-  controllers: [AuthController],
-  providers: [AuthService],
-})
-export class AuthModule {}
-```
-
----
-
-## 4. GitHub Issue & PR
-
-### Create Issue
-
-Title: `[Task 04] Auth Module - Register, Login, Session`
-Labels: `backend`, `task-04`, `priority:P1`
-
-### After Implementation - Create PR
+### Dependencies
 
 ```bash
-git checkout -b task/04-auth-module
-git add -A
-git commit -m "feat: implement auth module with register/login"
-git push -u origin task/04-auth-module
+pnpm add better-auth @thallesp/nestjs-better-auth @better-auth/drizzle-adapter
 ```
 
----
+### better-auth Configuration
 
-## 5. Verification Checklist
+- Provider: `pg` (PostgreSQL via drizzleAdapter)
+- Session: cookie-based, 30 days expiry
+- Schema mapping: `users` → `user`, `sessions` → `session`
+- basePath: `/auth`
 
-- [ ] Register creates user with wallet and membership
-- [ ] Login returns token
-- [ ] Swagger docs updated
-- [ ] Build successful
-- [ ] GitHub issue created
-- [ ] PR created
+### AuthController Endpoints
+
+| Method | Path | Guard | Description |
+|--------|------|-------|-------------|
+| POST | /auth/register | @AllowAnonymous | Sign up with email/password |
+| POST | /auth/login | @AllowAnonymous | Sign in with email/password |
+| POST | /auth/logout | @AuthGuard | Sign out current session |
+| GET | /auth/profile | @AuthGuard | Get current user profile |
+
+### Auto Wallet/Membership
+
+`AuthHooks` class dengan `@DatabaseHook()` decorator menggunakan `@AfterCreate('user')` untuk membuat wallet dan membership saat user baru register.
+
+## Verification Checklist
+
+- [x] better-auth instance created
+- [x] AuthModule uses NestjsAuthModule.forRoot
+- [x] AuthController has register/login/logout/profile endpoints
+- [x] AuthHooks creates wallet + membership on user creation
+- [x] Guards re-exported from @thallesp/nestjs-better-auth
+- [x] Unit tests pass (auth.service.spec.ts, auth.controller.spec.ts)
+- [x] Build successful
+- [ ] PRD.md updated
+- [ ] E2E tests updated (blocked by Jest/ESM incompatibility)

@@ -105,7 +105,7 @@ Produk adalah demo sistem pembelian (tiket/barang) dengan **e-wallet**, **member
 | API          | NestJS + **Fastify**     | `@nestjs/platform-fastify` sebagai HTTP adapter                                                    |
 | DB           | Drizzle + PostgreSQL     | `db.transaction()` untuk checkout                                                                  |
 | Cache/PubSub | Redis + Socket.io        | `ioredis`, `@socket.io/redis-adapter` untuk distributed deployment                                 |
-| Auth         | Custom Session           | Token-based session di database (bukan Better-Auth)                                                |
+| Auth         | Better-Auth + Drizzle   | Session-based authentication via `better-auth` + `@better-auth/drizzle-adapter`                                  |
 | RBAC         | Nest Guards + metadata   | `AuthGuard` + `RolesGuard` dengan `@Roles()` decorator                                             |
 | Logging      | nest-winston + Winston   | Structured logging, semua error di Exception Filter                                                |
 | Security     | Fastify plugins          | `@fastify/helmet`, `@fastify/cors`, `@fastify/csrf`, `@fastify/rate-limit`, `@fastify/compression` |
@@ -381,7 +381,7 @@ erDiagram
 | Table               | Deskripsi                                  |
 | ------------------- | ------------------------------------------ |
 | `users`             | User account dengan role admin/member      |
-| `sessions`          | Session tokens untuk authentication        |
+| `sessions`          | Session tokens untuk authentication (better-auth) |
 | `memberships`       | Membership tier dan points per user        |
 | `wallets`           | E-wallet balance per user                  |
 | `products`          | Produk/tiket yang dijual (active/inactive) |
@@ -457,17 +457,18 @@ erDiagram
 
 ### 6.1 Auth & Session Management
 
-- Custom session-based authentication (token di database, bukan JWT)
-- Register member baru → auto-create wallet + membership
-- Login → return token, simpan session di `sessions` table
-- Token expiration 30 hari
+- **better-auth** untuk session management (cookie-based, 30 days expiry)
+- `@thallesp/nestjs-better-auth` untuk integrasi NestJS
+- Register member baru → auto-create wallet + membership via `@AfterCreate` database hook
+- Login → better-auth handles session creation
+- `AuthGuard` (global), `@AllowAnonymous`, `@Session`, `@Roles` decorators dari `@thallesp/nestjs-better-auth`
 
 ### 6.2 RBAC (Role-Based Access Control)
 
-- `AuthGuard` - validates Bearer token dari header/cookie
-- `RolesGuard` - checks `@Roles('admin')` decorator
+- `AuthGuard` - global guard dari `@thallesp/nestjs-better-auth`
+- `@Roles('admin')` - decorator dari `@thallesp/nestjs-better-auth`
 - Enum/peran `admin` | `member` disimpan di `users.role`
-- `RolesGuard` menolak dengan **403** jika role tidak cocok
+- RolesGuard menolak dengan **403** jika role tidak cocok
 
 ### 6.3 Membership & wallet
 
@@ -1041,7 +1042,7 @@ backend/src/
 
 1. **Multi-repo:** artefak compose bisa dibagi atau duplikat asalkan aplikasi Nest dan Next tetap di repo berbeda dengan riwayat Git terpisah.
 2. **Paket manager:** pnpm atau npm **per repo** boleh; larangan hanya pada **monorepo tunggal** untuk menggabung BE+FE.
-3. **Custom Session Auth:** Menggunakan token-based session di database, bukan Better-Auth atau JWT. Token disimpan di `sessions` table dengan expiration.
+3. **Auth:** Menggunakan `better-auth` dengan `@better-auth/drizzle-adapter` untuk PostgreSQL. Session cookie-based, 30 days expiry.
 4. **IoT:** demo boleh satu klien browser sebagai pengganti perangkat fisik; WebSocket events bisa dihandle oleh FE listener.
 5. **EAL Ticket Model:** Tiket sepenuhnya digital (Dynamic QR Code) terikat membership. Tidak ada tiket fisik.
 6. **E-Wallet Priority:** E-Wallet EAL adalah closed-loop payment yang lebih cepat dari payment gateway eksternal untuk transaksi di dalam kawasan.

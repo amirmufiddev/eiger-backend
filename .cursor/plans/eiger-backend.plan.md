@@ -36,13 +36,12 @@ Ikuti fase **Phase 1–5** dengan skill Superpowers yang relevan:
 # Paket utama (latest NestJS)
 @nestjs/core @nestjs/common @nestjs/platform-fastify
 @nestjs/config @nestjs/swagger @nestjs/websockets @nestjs/platform-socket.io
-@nestjs/jwt @nestjs/passport passport
-drizzle-orm postgres better-auth
+drizzle-orm postgres
+better-auth @thallesp/nestjs-better-auth @better-auth/drizzle-adapter
 nest-winston winston
 helmet @fastify/helmet @fastify/cors @fastify/csrf @fastify/rate-limit @fastify/compression
 ioredis @socket.io/redis-adapter socket.io
 class-validator class-transformer
-uuid
 ```
 
 ### Prerequisites Checklist
@@ -394,10 +393,11 @@ flowchart LR
 
 ### 6.1 Authentication (Auth Module)
 
-- Register member baru (auto-create wallet + membership)
-- Login dengan email/password → return token
-- Session-based authentication dengan token
+- Register member baru (auto-create wallet + membership via `@AfterCreate` hook)
+- Login dengan email/password
+- Session-based authentication dengan cookie (better-auth)
 - Logout
+- Guards: `AuthGuard`, `Roles`, `@AllowAnonymous`, `@Session` dari `@thallesp/nestjs-better-auth`
 
 ### 6.2 Product Management
 
@@ -451,15 +451,15 @@ flowchart LR
 ### Guards & Decorators
 
 ```typescript
-// AuthGuard - validates Bearer token
+// AuthGuard - from @thallesp/nestjs-better-auth (validates session cookie/Bearer token)
 @UseGuards(AuthGuard)
 
-// RolesGuard - checks @Roles decorator
-@UseGuards(AuthGuard, RolesGuard)
+// RolesGuard - from @thallesp/nestjs-better-auth (checks @Roles decorator)
+@UseGuards(AuthGuard)
 @Roles('admin')
 
-// CurrentUser - injects user from request
-@CurrentUser() user: CurrentUserData
+// Session - from @thallesp/nestjs-better-auth (injects user session)
+@Session() session: UserSession
 ```
 
 ---
@@ -718,7 +718,7 @@ Setiap task sudah di-breakdown ke file terpisah:
 
 1. NestJS project sudah di-generate via `nest new eiger-backend`
 2. PostgreSQL dan Redis sudah jalan di environment
-3. Session-based auth (bukan JWT) dengan token di database
+3. Session-based auth menggunakan **better-auth** dengan cookie-based sessions
 4. Better-auth tidak digunakan, custom session implementation
 5. No transactional outbox - langsung deduct balance di checkout
 6. Soft delete untuk product yang sudah ada transaksi

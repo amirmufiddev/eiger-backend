@@ -4,6 +4,15 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  }
+    "^.+\\.(t|j)s$": ["ts-jest", { "useESM": true }]
+  },
+  "moduleNameMapper": {
+    "^@thallesp/nestjs-better-auth$": "<rootDir>/../src/__mocks__/nestjs-better-auth.ts",
+    "^better-auth$": "<rootDir>/../src/__mocks__/better-auth.ts",
+    "^better-auth/adapters/drizzle$": "<rootDir>/../src/__mocks__/better-auth/adapters/drizzle.ts",
+    "^better-auth/plugins$": "<rootDir>/../src/__mocks__/better-auth/plugins.ts"
+  },
+  "transformIgnorePatterns": [
+    "/node_modules/(?!(@thallesp|@better-auth|better-auth)/)"
+  ]
 }
