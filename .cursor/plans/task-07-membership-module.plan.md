@@ -1,7 +1,40 @@
 ---
 name: task-07-membership-module
 overview: "Task 7: Membership Module - Repository, Service, Admin/Member Controllers"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 07"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/membership/"
+    status: pending
+  - id: 3
+    content: "Buat MembershipRepository"
+    status: pending
+  - id: 4
+    content: "Buat MembershipService"
+    status: pending
+  - id: 5
+    content: "Buat DTOs (MembershipResponse)"
+    status: pending
+  - id: 6
+    content: "Buat MembershipAdminController"
+    status: pending
+  - id: 7
+    content: "Buat MembershipMemberController"
+    status: pending
+  - id: 8
+    content: "Buat MembershipModule"
+    status: pending
+  - id: 9
+    content: "Update AppModule import MembershipModule"
+    status: pending
+  - id: 10
+    content: "Verify build successful"
+    status: pending
+  - id: 11
+    content: "Buat PR ke branch task/07-membership-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +46,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Membership module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 07] Membership Module - Repository, Service, Controllers"
+body: (isi overview)
+labels: ["backend", "task-07", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

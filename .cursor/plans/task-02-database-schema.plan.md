@@ -37,9 +37,24 @@ isProject: true
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi database infrastructure | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 02] Database Infrastructure - Drizzle Schema"
+body: (isi overview dan entity descriptions)
+labels: ["backend", "task-02", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

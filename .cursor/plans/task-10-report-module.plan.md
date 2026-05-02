@@ -1,7 +1,34 @@
 ---
 name: task-10-report-module
 overview: "Task 10: Report Module - Revenue, Transaction, Membership Reports"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 10"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/report/"
+    status: pending
+  - id: 3
+    content: "Buat ReportService"
+    status: pending
+  - id: 4
+    content: "Buat DTOs (RevenueReport, TransactionReport, MembershipReport)"
+    status: pending
+  - id: 5
+    content: "Buat ReportAdminController"
+    status: pending
+  - id: 6
+    content: "Buat ReportModule"
+    status: pending
+  - id: 7
+    content: "Update AppModule import ReportModule"
+    status: pending
+  - id: 8
+    content: "Verify build successful"
+    status: pending
+  - id: 9
+    content: "Buat PR ke branch task/10-report-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +40,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Report module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 10] Report Module - Revenue, Transaction, Membership Reports"
+body: (isi overview)
+labels: ["backend", "task-10", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

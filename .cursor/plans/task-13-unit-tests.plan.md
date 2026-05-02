@@ -1,7 +1,43 @@
 ---
 name: task-13-unit-tests
 overview: "Task 13: Unit Tests untuk Semua Module"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 13"
+    status: pending
+  - id: 2
+    content: "Install testing dependencies (@nestjs/testing, jest, ts-jest)"
+    status: pending
+  - id: 3
+    content: "Configure Jest"
+    status: pending
+  - id: 4
+    content: "Buat AuthService unit tests"
+    status: pending
+  - id: 5
+    content: "Buat ProductService unit tests"
+    status: pending
+  - id: 6
+    content: "Buat PaymentMethodService unit tests"
+    status: pending
+  - id: 7
+    content: "Buat MembershipService unit tests"
+    status: pending
+  - id: 8
+    content: "Buat WalletService unit tests"
+    status: pending
+  - id: 9
+    content: "Buat TransactionService unit tests"
+    status: pending
+  - id: 10
+    content: "Buat ReportService unit tests"
+    status: pending
+  - id: 11
+    content: "Run tests verify all passing"
+    status: pending
+  - id: 12
+    content: "Buat PR ke branch task/13-unit-tests"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +49,24 @@ isProject: false
 
 | Fase | Aktivitas                        | Skill                             |
 | ---- | -------------------------------- | --------------------------------- |
-| 1    | Buat GitHub Issue untuk task ini | `/github-mcp-server`              |
+| 1    | Buat GitHub Issue untuk task ini | `issue_write` MCP tool            |
 | 2    | Implementasi Unit Tests          | `/executing-plans`                |
 | 3    | Buat PR setelah selesai          | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 13] Unit Tests untuk Semua Module"
+body: (isi overview)
+labels: ["backend", "task-13", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

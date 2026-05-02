@@ -1,7 +1,40 @@
 ---
 name: task-05-product-module
 overview: "Task 5: Product Module - Repository, Service, Admin/Member Controllers"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 05"
+    status: pending
+  - id: 2
+    content: "Buat directory src/modules/product/"
+    status: pending
+  - id: 3
+    content: "Buat ProductRepository"
+    status: pending
+  - id: 4
+    content: "Buat ProductService"
+    status: pending
+  - id: 5
+    content: "Buat DTOs (CreateProduct, UpdateProduct)"
+    status: pending
+  - id: 6
+    content: "Buat ProductAdminController"
+    status: pending
+  - id: 7
+    content: "Buat ProductMemberController"
+    status: pending
+  - id: 8
+    content: "Buat ProductModule"
+    status: pending
+  - id: 9
+    content: "Update AppModule import ProductModule"
+    status: pending
+  - id: 10
+    content: "Verify build successful"
+    status: pending
+  - id: 11
+    content: "Buat PR ke branch task/05-product-module"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +46,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi Product module | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 05] Product Module - Repository, Service, Admin/Member Controllers"
+body: (isi overview)
+labels: ["backend", "task-05", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 

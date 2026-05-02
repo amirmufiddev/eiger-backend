@@ -1,7 +1,31 @@
 ---
 name: task-03-common-guards-decorators
 overview: "Task 3: Common Guards, Decorators, dan Filters"
-todos: []
+todos:
+  - id: 1
+    content: "Buat GitHub Issue untuk Task 03"
+    status: pending
+  - id: 2
+    content: "Buat Roles decorator (src/common/decorators/roles.decorator.ts)"
+    status: pending
+  - id: 3
+    content: "Buat CurrentUser decorator (src/common/decorators/current-user.decorator.ts)"
+    status: pending
+  - id: 4
+    content: "Buat AuthGuard (src/common/guards/auth.guard.ts)"
+    status: pending
+  - id: 5
+    content: "Buat RolesGuard (src/common/guards/roles.guard.ts)"
+    status: pending
+  - id: 6
+    content: "Buat index.ts exports"
+    status: pending
+  - id: 7
+    content: "Verify build successful"
+    status: pending
+  - id: 8
+    content: "Buat PR ke branch task/03-common-guards-decorators"
+    status: pending
 isProject: false
 ---
 
@@ -13,9 +37,24 @@ isProject: false
 
 | Fase | Aktivitas | Skill |
 | ---- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 1 | Buat GitHub Issue untuk task ini | `/github-mcp-server` |
+| 1 | Buat GitHub Issue untuk task ini | `issue_write` MCP tool |
 | 2 | Implementasi guards, decorators, filters | `/executing-plans` |
 | 3 | Buat PR setelah selesai | `/finishing-a-development-branch` |
+
+### Fase 1 - Create GitHub Issue
+
+Gunakan `issue_write` tool dari `user-github-mcp-server` MCP:
+
+```
+method: "create"
+owner: "amirmufiddev"
+repo: "eiger-backend"
+title: "[Task 03] Common Guards, Decorators, dan Filters"
+body: (isi overview)
+labels: ["backend", "task-03", "priority:P1"]
+```
+
+Catatan: Pastikan read tool schema `issue_write.json` terlebih dahulu sebelum调用.
 
 ---
 
