@@ -23,7 +23,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
     {
-      logger: false,
+      bufferLogs: true,
+      bodyParser: false,
     },
   );
 

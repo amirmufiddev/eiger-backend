@@ -44,10 +44,10 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DATABASE_CONNECTION } from '../src/infrastructure/database/database.module';
-import { sessions, users } from '../src/infrastructure/database/schema/index';
+import { sessions, users } from '../src/infrastructure/database/index';
 import { like } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../src/infrastructure/database/schema/index';
+import type * as schema from '../src/infrastructure/database/index';
 import type { Agent } from 'supertest';
 
 describe('Auth (e2e)', () => {
