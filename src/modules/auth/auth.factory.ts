@@ -32,6 +32,7 @@ export function createAuth(deps: AuthFactoryDeps): Auth<any> {
     trustedOrigins: [
       configService.get<string>('FRONTEND_URL') || 'http://localhost:3000',
     ],
+    databaseHooks: {},
     database: drizzleAdapter(db, {
       provider: 'pg',
       schema: {
