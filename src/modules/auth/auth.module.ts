@@ -20,6 +20,7 @@ import { createAuthFactory } from './auth.factory';
           urlencoded: { limit: '2mb', extended: true },
           rawBody: true,
         },
+        disableControllers: true,
         disableTrustedOriginsCors: true,
       }),
     }),
