@@ -5,9 +5,11 @@ jest.mock('@thallesp/nestjs-better-auth', () => ({
   ),
 }));
 
-jest.mock('../../infrastructure/database/schema/index', () => ({
-  wallets: 'wallets',
-  memberships: 'memberships',
+jest.mock('../../infrastructure/database/index', () => ({
+  schema: {
+    wallets: 'wallets',
+    memberships: 'memberships',
+  },
 }));
 
 import { Test, TestingModule } from '@nestjs/testing';

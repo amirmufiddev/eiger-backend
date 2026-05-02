@@ -76,7 +76,9 @@ describe('Auth (e2e)', () => {
 
   afterEach(async () => {
     if (db) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
       await db.delete(sessions).where(like(sessions.userId, 'e2e_%'));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
       await db.delete(users).where(like(users.email, 'e2e_%'));
     }
   });
