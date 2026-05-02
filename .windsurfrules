@@ -3,7 +3,7 @@ Sistem API untuk Cashless & Single-Identity Pass EAL.
 
 # AI Memory Bank Rules
 - JANGAN scan seluruh codebase di awal sesi jika tidak minta. Panggil file secara spesifik.
-- Selalu baca `/.ai/current-task.md` pertama kali untuk mengetahui konteks.
+- Selalu periksa direktori `.cursor/plans/` (terutama plan yang sedang aktif) pertama kali untuk mengetahui konteks tugas saat ini.
 - Rujuk ke `/.ai/architecture.md` untuk aturan arsitektur.
 
 # Tech Stack & Constraints
@@ -31,4 +31,22 @@ Setiap kali menerima perintah dari saya, analisis niat perintah tersebut dan OTO
 - Jika terkait **Arsitektur Utama / Transaksi Checkout**: OTOMATIS baca `/.ai/architecture.md`.
 - Jika terkait **Application Flow / User Flow**: OTOMATIS baca `/.ai/application-flow.md`.
 
-Setelah tugas selesai, OTOMATIS perbarui `/.ai/current-task.md` tanpa perlu saya suruh.
+Setelah tugas selesai, OTOMATIS perbarui checklist pada file plan yang sedang aktif di `.cursor/plans/` dengan memberi tanda centang [x] tanpa perlu saya suruh.
+
+# Fallback Documentation
+- Jika informasi di folder `/.ai/` tidak cukup untuk menjawab pertanyaan bisnis atau Anda membutuhkan spesifikasi fungsional yang sangat mendetail, SILAKAN BACA file `PRD.md` di root folder.
+
+# Superpowers Auto-Pilot (Intent Recognition & Native Plans)
+Anda adalah AI Agent otonom. Anda TIDAK perlu menunggu perintah awalan `/` dari saya. Analisis kalimat saya dan OTOMATIS jalankan alur kerja (workflow) Superpowers yang sesuai:
+
+1. **Jika niat saya adalah MERENCANAKAN atau BERTANYA IDE** (Contoh: "Gimana cara bikin fitur X?", "Tolong buat list kerjaan besok"):
+   -> OTOMATIS asumsikan ini adalah alur kerja `/brainstorming` atau `/writing-plans`.
+   -> Tindakan: Baca `PRD.md` dan folder `/.ai/`, lalu OTOMATIS buat file rencana kerja di dalam direktori `.cursor/plans/` dengan format `nama-fitur.plan.md`. Gunakan format checklist markdown (`- [ ]`) agar terdeteksi oleh UI Composer Cursor.
+
+2. **Jika niat saya adalah MENGEKSEKUSI KODE atau MENGERJAKAN TASK** (Contoh: "Kerjakan task pertama", "Bikin endpoint top-up"):
+   -> OTOMATIS asumsikan ini adalah alur kerja `/executing-plans` atau `/subagent-driven-development`.
+   -> Tindakan: Rujuk ke plan yang sedang aktif di `.cursor/plans/`. Rujuk ke `/.ai/architecture.md`, panggil `graphify-out` via MCP jika butuh relasi, lalu tulis kodenya. Setelah eksekusi berhasil, OTOMATIS centang `[x]` pada file plan tersebut.
+
+3. **Jika niat saya adalah MENGECEK atau DEBUGGING** (Contoh: "Ada error nih", "Tolong cek kode yang baru dibuat"):
+   -> OTOMATIS asumsikan ini adalah alur kerja `/requesting-code-review`.
+   -> Tindakan: Validasi kode terhadap aturan di `/.ai/edge-cases.md` dan pastikan bebas dari celah concurrency.
